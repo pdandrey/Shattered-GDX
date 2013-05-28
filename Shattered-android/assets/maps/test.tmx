@@ -25,7 +25,7 @@
   </data>
  </layer>
  <objectgroup name="entities" width="40" height="15">
-  <object name="player" type="mob" x="256" y="256" width="32" height="32">
+  <object name="player" type="mob" x="192" y="256" width="32" height="32">
    <properties>
     <property name="image" value="player"/>
    </properties>
@@ -45,14 +45,11 @@
   <object x="256" y="173">
    <polygon points="0,0 -21,18 1,39 21,19"/>
   </object>
-  <object x="480" y="236" width="34" height="24">
-   <ellipse/>
-  </object>
-  <object x="702" y="203" width="34" height="24">
-   <ellipse/>
-  </object>
-  <object x="861" y="288" width="30" height="24">
-   <ellipse/>
+  <object x="480" y="224" width="32" height="32"/>
+  <object x="704" y="192" width="32" height="32"/>
+  <object x="862" y="289" width="29" height="21"/>
+  <object x="94" y="48">
+   <polyline points="0,0 -15,17 -17,72 50,142 34,158 1,160 -12,172 49,238 48,303 34,318 -10,320 -18,365 5,388 164,384 188,351 229,352 295,286 320,254 334,275 336,346 418,353 438,382 490,383 513,350 536,383 586,386 595,413 620,414 636,385 657,382 663,322 744,325 751,357 772,388 998,383 1015,358 1124,350 1138,328 1134,293 1116,289 1028,286 1013,271 1010,144 1044,108 1042,50 1003,2 924,4 898,32 698,27 689,7 661,-9 656,-29 563,-30 563,-2 591,14 580,29 537,30 514,61 499,36 471,23 464,2 375,-5 365,-30 323,-35 295,-4 247,3 233,52 223,62 63,60 2,0"/>
   </object>
  </objectgroup>
 </map>
