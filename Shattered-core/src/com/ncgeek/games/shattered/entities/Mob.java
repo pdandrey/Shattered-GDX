@@ -42,10 +42,10 @@ public class Mob extends EntitySprite {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.fixedRotation = false;
-		def.position.set(getPosition().add(32, 16).scl(unitScale));
+		def.position.set(getPosition().scl(unitScale));
 		
 		CircleShape shape = new CircleShape();
-		shape.setRadius(16f * unitScale);
+		shape.setRadius(10f * unitScale);
 		
 		FixtureDef fixture = new FixtureDef();
 		fixture.shape = shape;
@@ -57,6 +57,8 @@ public class Mob extends EntitySprite {
 		
 		body.createFixture(fixture);
 		shape.dispose();
+		
+		getOffset().set(-32 * unitScale, -8 * unitScale);
 	}
 
 	public void turn() {

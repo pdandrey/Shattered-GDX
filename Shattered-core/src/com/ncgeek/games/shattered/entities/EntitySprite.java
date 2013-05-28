@@ -11,10 +11,12 @@ public abstract class EntitySprite extends AnimatedSprite {
 
 	private Body body;
 	private Vector2 velocity;
+	private Vector2 offset;
 	
 	public EntitySprite() {
 		body = null;
 		velocity = new Vector2();
+		offset = new Vector2(0,0);
 	}
 	
 	public void load(MapProperties props, IShape bounds) {
@@ -32,6 +34,7 @@ public abstract class EntitySprite extends AnimatedSprite {
 	public final Body getBody() { return body; }
 	
 	public final Vector2 getVelocity() { return velocity; }
+	public final Vector2 getOffset() { return offset; }
 	
 	public void update() {
 		body.setLinearVelocity(velocity);
@@ -40,7 +43,7 @@ public abstract class EntitySprite extends AnimatedSprite {
 	
 	@Override
 	public void draw(SpriteBatch batch, float unitScale) {
-		getPosition().set(body.getPosition()); //.scl(1f/unitScale));
+		getPosition().set(body.getPosition()).add(offset); //.scl(1f/unitScale));
 		super.draw(batch, unitScale);
 	}
 }

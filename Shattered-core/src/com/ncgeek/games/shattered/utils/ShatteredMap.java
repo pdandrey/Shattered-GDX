@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.OperationNotSupportedException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -127,6 +125,7 @@ public class ShatteredMap implements Disposable {
 	private void parseCollisions(MapLayer ml) {
 		for(Iterator<MapObject> i = ml.getObjects().iterator(); i.hasNext(); ) {
 			MapObject mo = i.next();
+			System.out.format("Parsing collision %s\n", mo.getName());
 			
 			if(mo instanceof RectangleMapObject)
 				parseRectangleCollision((RectangleMapObject)mo);
@@ -169,12 +168,11 @@ public class ShatteredMap implements Disposable {
 
 	private void parsePolylineMapObject(PolylineMapObject mo) {
 		Polyline line = mo.getPolyline();
-		line.scale(UNIT_SCALE);
-		float[] coords = line.getTransformedVertices();
+		float[] coords = line.getVertices();
 		Vector2 [] vector = new Vector2[coords.length / 2];
 		
 		for(int i=0; i<coords.length; i+=2) {
-			vector[i/2] = new Vector2(coords[i], coords[i+1]);
+			vector[i/2] = new Vector2(coords[i] * UNIT_SCALE, coords[i+1] * UNIT_SCALE);
 		}
 		
 		BodyDef def = new BodyDef();
@@ -187,19 +185,21 @@ public class ShatteredMap implements Disposable {
 	}
 
 	private void parsePolygonMapObject(PolygonMapObject mo) {
+		System.out.println("polygon");
 		Polygon p = mo.getPolygon();
-		p.scale(UNIT_SCALE);
-		float[] coords = p.getTransformedVertices();
+		float[] coords = p.getVertices();
 		Vector2 [] vector = new Vector2[coords.length / 2];
 		
 		for(int i=0; i<coords.length; i+=2) {
-			vector[i/2] = new Vector2(coords[i], coords[i+1]);
+			vector[i/2] = new Vector2(coords[i] * UNIT_SCALE, coords[i+1] * UNIT_SCALE);
+			System.out.println(vector[i/2]);
 		}
 		
 		BodyDef def = new BodyDef();
 		def.type = BodyType.StaticBody;						
 		ChainShape shape = new ChainShape();
 		def.position.set(p.getX() * UNIT_SCALE, p.getY() * UNIT_SCALE);
+		System.out.println(def.position);
 		shape.createLoop(vector);
 		world.createBody(def).createFixture(shape, 1);
 		shape.dispose();
@@ -209,9 +209,10 @@ public class ShatteredMap implements Disposable {
 		float polyWidth = mo.getRectangle().width * UNIT_SCALE / 2f;
 		float polyHeight = mo.getRectangle().height * UNIT_SCALE / 2f;
 		BodyDef def = new BodyDef();
-		def.type = BodyType.StaticBody;				
+		def.type = BodyType.StaticBody;			
+		def.fixedRotation = true;
 		PolygonShape shape = new PolygonShape();
-		def.position.set(mo.getRectangle().x + polyWidth, mo.getRectangle().y - polyHeight);
+		def.position.set(mo.getRectangle().x * UNIT_SCALE + polyWidth, mo.getRectangle().y * UNIT_SCALE + polyHeight);
 		
 		shape.setAsBox(polyWidth, polyHeight);
 		world.createBody(def).createFixture(shape, 1);
