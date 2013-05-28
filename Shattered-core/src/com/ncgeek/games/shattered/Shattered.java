@@ -37,7 +37,6 @@ public class Shattered implements ApplicationListener {
 	private SpriteBatch batch;
 	private Stage stage;
 	
-	
 	private Touchpad pad;
 	
 	private Mob player;
@@ -66,15 +65,12 @@ public class Shattered implements ApplicationListener {
 
 		map = new ShatteredMap("test");
 		
-		
-		
-		
-		
 		createUI();
-
-		
 		
 		player = (Mob)map.getEntityByName("player").get(0);
+		player.update();
+		Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
+		camera.position.set(curr);
 	}
 
 	@Override
@@ -110,7 +106,6 @@ public class Shattered implements ApplicationListener {
 			}
 			
 			Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
-			//curr.scl(1f/32f, 1f/32f, 1);
 			camera.position.set(curr);
 		}
 		
@@ -121,7 +116,6 @@ public class Shattered implements ApplicationListener {
 		batch.begin();
 		
 		Vector3 pos = new Vector3(player.getPosition().x, player.getPosition().y, 0);
-		//pos.scl(1f/32f, 1f/32f, 1);
 		
 		font.draw(batch, String.format("FPS: %d, Camera: %f, %f, Player: %f, %f", Gdx.graphics.getFramesPerSecond(), camera.position.x, camera.position.y, pos.x, pos.y), 10, 20);
 		batch.end();

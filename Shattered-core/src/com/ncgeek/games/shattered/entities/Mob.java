@@ -34,7 +34,6 @@ public class Mob extends EntitySprite {
 		addAnimation("walksouth", 0.15f, Animation.LOOP);
 		
 		setCurrentAnimation("walksouth");
-		setIsAnimating(true);
 	}
 	
 	@Override

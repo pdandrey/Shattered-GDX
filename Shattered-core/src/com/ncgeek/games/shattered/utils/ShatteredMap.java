@@ -119,13 +119,12 @@ public class ShatteredMap implements Disposable {
 		renderer.setView(camera);
 		renderer.render();
 		
-		b2renderer.render(world, camera.combined); //.scale(UNIT_SCALE, UNIT_SCALE, UNIT_SCALE));
+		b2renderer.render(world, camera.combined);
 	}
 	
 	private void parseCollisions(MapLayer ml) {
 		for(Iterator<MapObject> i = ml.getObjects().iterator(); i.hasNext(); ) {
 			MapObject mo = i.next();
-			System.out.format("Parsing collision %s\n", mo.getName());
 			
 			if(mo instanceof RectangleMapObject)
 				parseRectangleCollision((RectangleMapObject)mo);
@@ -159,7 +158,7 @@ public class ShatteredMap implements Disposable {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.StaticBody;				
 		CircleShape shape = new CircleShape();
-		def.position.set(mo.getCircle().x, mo.getCircle().y);
+		def.position.set(mo.getCircle().x * UNIT_SCALE, mo.getCircle().y * UNIT_SCALE);
 		
 		shape.setRadius(radius);
 		world.createBody(def).createFixture(shape, 1);
@@ -185,21 +184,18 @@ public class ShatteredMap implements Disposable {
 	}
 
 	private void parsePolygonMapObject(PolygonMapObject mo) {
-		System.out.println("polygon");
 		Polygon p = mo.getPolygon();
 		float[] coords = p.getVertices();
 		Vector2 [] vector = new Vector2[coords.length / 2];
 		
 		for(int i=0; i<coords.length; i+=2) {
 			vector[i/2] = new Vector2(coords[i] * UNIT_SCALE, coords[i+1] * UNIT_SCALE);
-			System.out.println(vector[i/2]);
 		}
 		
 		BodyDef def = new BodyDef();
 		def.type = BodyType.StaticBody;						
 		ChainShape shape = new ChainShape();
 		def.position.set(p.getX() * UNIT_SCALE, p.getY() * UNIT_SCALE);
-		System.out.println(def.position);
 		shape.createLoop(vector);
 		world.createBody(def).createFixture(shape, 1);
 		shape.dispose();
