@@ -36,6 +36,13 @@ import com.ncgeek.games.shattered.entities.Sprite;
 
 public class ShatteredMap implements Disposable {
 
+	public static void printProperties(MapProperties props) {
+		for(Iterator<String> i = props.getKeys(); i.hasNext(); ) {
+			String key = i.next();
+			System.out.format("%s: %s [%s]\n", key, props.get(key).toString(), props.get(key).getClass().getSimpleName());
+		}
+	}
+	
 	private static final float UNIT_SCALE = 1f / 32f;
 	
 	private TiledMap map;

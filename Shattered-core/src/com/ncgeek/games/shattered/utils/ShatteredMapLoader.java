@@ -89,6 +89,8 @@ public class ShatteredMapLoader extends TmxMapLoader {
 				props.put("x", x);
 				props.put("y", yUp ? y - height : y);
 				props.put("visible", element.getIntAttribute("visible", 1) == 1);
+				props.put("width", width);
+				props.put("height", height);
 				
 				try {
 					Sprite object = (Sprite)cls.newInstance();

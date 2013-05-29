@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ncgeek.games.shattered.shapes.IShape;
+import com.ncgeek.games.shattered.utils.ShatteredMap;
 
 public class Mob extends EntitySprite {
 
@@ -26,6 +27,15 @@ public class Mob extends EntitySprite {
 		if(props.get(Sprite.SPRITE_IMAGE) == null)
 			props.put(Sprite.SPRITE_IMAGE, "greendress");
 		
+		int x = (Integer)props.get("x");
+		int width = (Integer)props.get("width");
+		x += width/2;
+		props.put("x", x);
+		
+		int y = (Integer)props.get("y");
+		y += 16;
+		props.put("y", y);
+		
 		super.load(props, bounds);
 		
 		addAnimation("walknorth", 0.15f, Animation.LOOP);
@@ -34,6 +44,8 @@ public class Mob extends EntitySprite {
 		addAnimation("walksouth", 0.15f, Animation.LOOP);
 		
 		setCurrentAnimation("walksouth");
+		
+		ShatteredMap.printProperties(props);
 	}
 	
 	@Override
