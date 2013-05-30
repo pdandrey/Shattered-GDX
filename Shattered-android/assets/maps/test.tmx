@@ -30,6 +30,26 @@
     <property name="image" value="player"/>
    </properties>
   </object>
+  <object name="princess" type="mob" x="352" y="128" width="32" height="32">
+   <properties>
+    <property name="image" value="princess"/>
+   </properties>
+  </object>
+  <object name="anna" type="mob" x="608" y="192" width="32" height="32">
+   <properties>
+    <property name="image" value="female_greendress"/>
+   </properties>
+  </object>
+  <object name="chest" type="chest" x="543" y="289" width="32" height="32">
+   <properties>
+    <property name="image" value="rounded"/>
+   </properties>
+  </object>
+  <object name="chest" type="chest" x="691" y="308" width="32" height="32">
+   <properties>
+    <property name="image" value="square"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="trunk2" width="40" height="15">
   <data encoding="base64">

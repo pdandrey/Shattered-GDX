@@ -25,7 +25,7 @@ public class Mob extends EntitySprite {
 		props.put(Sprite.SPRITE_HEIGHT, 64);
 		
 		if(props.get(Sprite.SPRITE_IMAGE) == null)
-			props.put(Sprite.SPRITE_IMAGE, "greendress");
+			props.put(Sprite.SPRITE_IMAGE, "female_greendress");
 		
 		int x = (Integer)props.get("x");
 		int width = (Integer)props.get("width");

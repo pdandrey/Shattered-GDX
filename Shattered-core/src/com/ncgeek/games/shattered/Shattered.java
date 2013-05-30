@@ -160,8 +160,7 @@ public class Shattered implements ApplicationListener {
 		btnMenu.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				//Vector2 pos = m.getPosition();
-				//Log.log("TiledTester", "Position: %f, %f", pos.x, pos.y);
+				map.setShowDebug(!map.isShowDebug());
 			}
 		});
 		

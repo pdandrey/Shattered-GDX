@@ -45,6 +45,8 @@ public class ShatteredMap implements Disposable {
 	
 	private static final float UNIT_SCALE = 1f / 32f;
 	
+	private boolean bDebug = false;
+	
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private Color bgColor;
@@ -112,6 +114,8 @@ public class ShatteredMap implements Disposable {
 	public final Color getBackgroundColor() { return bgColor; }
 	public final int getWidth() { return width; }
 	public final int getHeight() { return height; }
+	public final void setShowDebug(boolean show) { bDebug = show; }
+	public final boolean isShowDebug() { return bDebug; }
 	
 	public void render(OrthographicCamera camera) {
 		for(List<MapObject> lst : entities.values()) {
@@ -126,7 +130,8 @@ public class ShatteredMap implements Disposable {
 		renderer.setView(camera);
 		renderer.render();
 		
-		b2renderer.render(world, camera.combined);
+		if(bDebug)
+			b2renderer.render(world, camera.combined);
 	}
 	
 	private void parseCollisions(MapLayer ml) {
