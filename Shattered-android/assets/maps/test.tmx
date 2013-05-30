@@ -42,12 +42,12 @@
   </object>
   <object name="chest" type="chest" x="543" y="289" width="32" height="32">
    <properties>
-    <property name="image" value="rounded"/>
+    <property name="chest_type" value="rounded"/>
    </properties>
   </object>
   <object name="chest" type="chest" x="691" y="308" width="32" height="32">
    <properties>
-    <property name="image" value="square"/>
+    <property name="chest_type" value="square"/>
    </properties>
   </object>
  </objectgroup>

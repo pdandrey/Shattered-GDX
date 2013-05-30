@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.ncgeek.games.shattered.entities.Chest;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.utils.OrthoCamController;
 import com.ncgeek.games.shattered.utils.ShatteredMap;
@@ -45,6 +46,7 @@ public class Shattered implements ApplicationListener {
 	public void create() {		
 		
 		ShatteredMapLoader.addMapping("mob", Mob.class);
+		ShatteredMapLoader.addMapping("chest", Chest.class);
 		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();

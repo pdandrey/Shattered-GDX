@@ -36,10 +36,12 @@ import com.ncgeek.games.shattered.entities.Sprite;
 
 public class ShatteredMap implements Disposable {
 
+	private static final String LOG_TAG = "ShatteredMap";
+	
 	public static void printProperties(MapProperties props) {
 		for(Iterator<String> i = props.getKeys(); i.hasNext(); ) {
 			String key = i.next();
-			System.out.format("%s: %s [%s]\n", key, props.get(key).toString(), props.get(key).getClass().getSimpleName());
+			Log.log(LOG_TAG, "%s: %s [%s]\n", key, props.get(key).toString(), props.get(key).getClass().getSimpleName());
 		}
 	}
 	

@@ -9,8 +9,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.ncgeek.games.shattered.shapes.IShape;
+import com.ncgeek.games.shattered.utils.Log;
 
-public class Sprite extends MapObject implements Disposable {
+public class Sprite extends MapObject implements Disposable, Comparable<Sprite>  {
 	
 	public static final String SPRITE_IMAGE = "image";
 	public static final String SPRITE_WIDTH = "spritewidth";
@@ -78,4 +79,10 @@ public class Sprite extends MapObject implements Disposable {
 	}
 	
 	public void update() { }
+
+	@Override
+	public int compareTo(Sprite o) {
+		int ret = (int)((o.position.y - position.y) * 10000);
+		return ret;
+	}
 }
