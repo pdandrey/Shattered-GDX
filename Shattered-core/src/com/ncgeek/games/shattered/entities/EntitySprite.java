@@ -41,7 +41,7 @@ public abstract class EntitySprite extends AnimatedSprite {
 	public final Vector2 getOffset() { return offset; }
 	
 	public final EntitySprite getTarget() { return target; }
-	public final void setTarget(EntitySprite tgt) { target = tgt; Log.log(LOG_TAG, "%s is now targetting %s", getName(), tgt == null ? "nothing" : tgt.getName()); }
+	public final void setTarget(EntitySprite tgt) { target = tgt; }
 	public final boolean hasTarget() { return target != null; }
 	
 	public abstract void interact(EntitySprite target);

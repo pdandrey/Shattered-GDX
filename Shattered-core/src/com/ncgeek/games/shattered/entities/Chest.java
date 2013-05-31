@@ -9,12 +9,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ncgeek.games.shattered.shapes.IShape;
+import com.ncgeek.games.shattered.utils.Dialog;
 import com.ncgeek.games.shattered.utils.Log;
 
 public class Chest extends EntitySprite {
 
 	private static final String LOG_TAG = "Chest";
 	private static final String CHEST_TYPE = "chest_type";
+	
+	private boolean isOpened = false;
 	
 	@Override
 	public void load(MapProperties props, IShape bounds) {
@@ -68,7 +71,10 @@ public class Chest extends EntitySprite {
 
 	@Override
 	public void interact(EntitySprite target) {
-		// TODO Auto-generated method stub
-		
+		if(!isOpened) {
+			setIsAnimating(true);
+			Dialog.showDialog("You obtain an item");
+			isOpened = true;
+		} 
 	}
 }

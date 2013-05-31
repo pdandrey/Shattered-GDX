@@ -75,7 +75,6 @@ public class Shattered implements ApplicationListener {
 			@Override
 			public void defaultActionPerformed() {
 				if(player.hasTarget()) {
-					Log.log(LOG_TAG, "player interacting with %s", player.getTarget().getName());
 					player.getTarget().interact(player);
 				}
 			}
@@ -186,10 +185,6 @@ public class Shattered implements ApplicationListener {
 	
 	private void createUI() {
 		Skin skin = new Skin(Gdx.files.internal("data/skin3.json"));
-		//Skin skin2 = new Skin(Gdx.files.internal("data/uiskin2.json"));
-		//skin.add("touchpad_background", new Texture(Gdx.files.internal("data/controller_base.png")));
-		//skin.add("touchpad_knob", new Texture(Gdx.files.internal("data/controller_knob.png")));
-		//skin.add("dialog_box",new NinePatch(new Texture(Gdx.files.internal("data/dialog_box.9.png"))));
 		
 		Table parent = new Table();
 		parent.setFillParent(true);
@@ -208,10 +203,7 @@ public class Shattered implements ApplicationListener {
 		parent.row();
 		
 		if(isTouchscreen) {
-			//TouchpadStyle tpStyle = new TouchpadStyle(skin.getDrawable("touchpad_background"), skin.getDrawable("touchpad_knob"));
-			
-			
-			pad = new Touchpad(10f, skin);//, tpStyle);
+			pad = new Touchpad(10f, skin);
 			pad.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
@@ -235,9 +227,8 @@ public class Shattered implements ApplicationListener {
 		Label l = new Label("", skin, "dialog");
 		l.setWrap(true);
 		l.setSize(stage.getWidth(), 100);
-		l.setAlignment(Align.top, Align.left);
+		l.setAlignment(Align.top | Align.left);
 		l.setVisible(false);
-		Log.log(LOG_TAG, "%f,  %f", l.getWidth(), l.getHeight());
 		Dialog.init(l);
 		stage.addActor(l);
 	}
