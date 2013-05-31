@@ -60,6 +60,7 @@ public class ShatteredMap implements Disposable {
 	
 	public ShatteredMap(String mapName) {
 		world = new World(new Vector2(0,0), true);
+		world.setContactListener(new CollisionListener());
 		
 		map = new ShatteredMapLoader().load("maps/" + mapName + ".tmx");
 		MapProperties props = map.getProperties();

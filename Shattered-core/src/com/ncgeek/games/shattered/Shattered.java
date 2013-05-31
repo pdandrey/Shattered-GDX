@@ -3,37 +3,50 @@ package com.ncgeek.games.shattered;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.esotericsoftware.tablelayout.Cell;
 import com.ncgeek.games.shattered.entities.Chest;
 import com.ncgeek.games.shattered.entities.Mob;
-import com.ncgeek.games.shattered.utils.OrthoCamController;
+import com.ncgeek.games.shattered.utils.ActionListener;
+import com.ncgeek.games.shattered.utils.Dialog;
+import com.ncgeek.games.shattered.utils.Log;
+import com.ncgeek.games.shattered.utils.ShatteredController;
 import com.ncgeek.games.shattered.utils.ShatteredMap;
 import com.ncgeek.games.shattered.utils.ShatteredMapLoader;
 
 public class Shattered implements ApplicationListener {
 
+	private final static String LOG_TAG = "Shattered";
 	private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	
 	private ShatteredMap map;
 	private OrthographicCamera camera;
-	private OrthoCamController cameraController;
+	private ShatteredController controller;
 	private BitmapFont font;
 	private SpriteBatch batch;
 	private Stage stage;
@@ -41,6 +54,8 @@ public class Shattered implements ApplicationListener {
 	private Touchpad pad;
 	
 	private Mob player;
+	
+	private boolean isTouchscreen = true;
 	
 	@Override
 	public void create() {		
@@ -55,11 +70,20 @@ public class Shattered implements ApplicationListener {
 		camera.setToOrtho(false, (w / h) * 10, 10);
 		camera.update();
 		
-		cameraController = new OrthoCamController(camera);
+		controller = new ShatteredController(camera);
+		controller.setActionListener(new ActionListener() {
+			@Override
+			public void defaultActionPerformed() {
+				if(player.hasTarget()) {
+					Log.log(LOG_TAG, "player interacting with %s", player.getTarget().getName());
+					player.getTarget().interact(player);
+				}
+			}
+		});
 		
 		stage = new Stage(w/2, h/2, false);
 		
-		InputMultiplexer input = new InputMultiplexer(stage, cameraController);
+		InputMultiplexer input = new InputMultiplexer(stage, controller);
 		Gdx.input.setInputProcessor(input);
 		
 		font = new BitmapFont();
@@ -73,6 +97,8 @@ public class Shattered implements ApplicationListener {
 		player.update();
 		Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
 		camera.position.set(curr);
+		
+		//isTouchscreen = Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen);
 	}
 
 	@Override
@@ -87,13 +113,21 @@ public class Shattered implements ApplicationListener {
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		float x = 0, y = 0;
+		
 		if(pad != null && pad.isTouched()) {
-			float x = pad.getKnobPercentX();
-			float y = pad.getKnobPercentY();
-			
+			x = pad.getKnobPercentX();
+			y = pad.getKnobPercentY();
+		} else if(controller.hasMovement()) {
+			Vector2 movement = controller.getMovement();
+			x = movement.x;
+			y = movement.y;
+		}
+		
+		if(x != 0 || y != 0) {
+			player.walk();
 			if(player.isAnimating())
 				player.move(TOUCHPAD_MAX_SCROLL_SPEED * x, TOUCHPAD_MAX_SCROLL_SPEED * y);
-			//camera.update();
 			
 			if(Math.abs(x) > Math.abs(y)) {
 				if(x > y)
@@ -109,6 +143,8 @@ public class Shattered implements ApplicationListener {
 			
 			Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
 			camera.position.set(curr);
+		} else {
+			player.stand();
 		}
 		
 		clampCamera();
@@ -124,6 +160,7 @@ public class Shattered implements ApplicationListener {
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+//		Table.drawDebug(stage);
 	}
 	
 	public void clampCamera() {
@@ -148,9 +185,11 @@ public class Shattered implements ApplicationListener {
 	}
 	
 	private void createUI() {
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		skin.add("touchpad_background", new Texture(Gdx.files.internal("data/controller_base.png")));
-		skin.add("touchpad_knob", new Texture(Gdx.files.internal("data/controller_knob.png")));
+		Skin skin = new Skin(Gdx.files.internal("data/skin3.json"));
+		//Skin skin2 = new Skin(Gdx.files.internal("data/uiskin2.json"));
+		//skin.add("touchpad_background", new Texture(Gdx.files.internal("data/controller_base.png")));
+		//skin.add("touchpad_knob", new Texture(Gdx.files.internal("data/controller_knob.png")));
+		//skin.add("dialog_box",new NinePatch(new Texture(Gdx.files.internal("data/dialog_box.9.png"))));
 		
 		Table parent = new Table();
 		parent.setFillParent(true);
@@ -166,24 +205,40 @@ public class Shattered implements ApplicationListener {
 			}
 		});
 		
-		TouchpadStyle tpStyle = new TouchpadStyle(skin.getDrawable("touchpad_background"), skin.getDrawable("touchpad_knob"));
-		
-		pad = new Touchpad(10f, tpStyle);
-		pad.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				float x = Math.abs(pad.getKnobPercentX());
-				float y = Math.abs(pad.getKnobPercentY());
-				
-				if(x > 0 && y > 0)
-					player.walk();
-				else
-					player.stand();
-			}
-		});
 		parent.row();
-		parent.add(pad).expand().bottom().left();
+		
+		if(isTouchscreen) {
+			//TouchpadStyle tpStyle = new TouchpadStyle(skin.getDrawable("touchpad_background"), skin.getDrawable("touchpad_knob"));
+			
+			
+			pad = new Touchpad(10f, skin);//, tpStyle);
+			pad.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					float x = Math.abs(pad.getKnobPercentX());
+					float y = Math.abs(pad.getKnobPercentY());
+					
+					if(x > 0 && y > 0)
+						player.walk();
+					else
+						player.stand();
+				}
+			});
+			//parent.add(pad).expand().bottom().left();
+			parent.add(pad).expand().bottom().left();
+		} else {
+			parent.add().expand();
+		}
 		
 		stage.addActor(parent);
+		
+		Label l = new Label("", skin, "dialog");
+		l.setWrap(true);
+		l.setSize(stage.getWidth(), 100);
+		l.setAlignment(Align.top, Align.left);
+		l.setVisible(false);
+		Log.log(LOG_TAG, "%f,  %f", l.getWidth(), l.getHeight());
+		Dialog.init(l);
+		stage.addActor(l);
 	}
 }

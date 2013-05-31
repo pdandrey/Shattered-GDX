@@ -13,7 +13,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        com.ncgeek.games.shattered.utils.Log.setLogger(new Logger());
+        com.ncgeek.games.shattered.utils.Log.setLogger(new com.ncgeek.games.shattered.Logger());
         
         initialize(new Shattered(), cfg);
         

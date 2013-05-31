@@ -1,0 +1,27 @@
+
+uiskin2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+controller_base
+  rotate: false
+  xy: 1, 35
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+dialog_box
+  rotate: false
+  xy: 1, 1
+  size: 128, 32
+  split: 32, 85, 11, 17
+  orig: 128, 32
+  offset: 0, 0
+  index: -1
+controller_knob
+  rotate: false
+  xy: 131, 99
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

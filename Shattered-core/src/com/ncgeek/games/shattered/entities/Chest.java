@@ -65,4 +65,10 @@ public class Chest extends EntitySprite {
 	public void draw(SpriteBatch batch, float unitScale) {
 		super.draw(batch, unitScale);
 	}
+
+	@Override
+	public void interact(EntitySprite target) {
+		// TODO Auto-generated method stub
+		
+	}
 }

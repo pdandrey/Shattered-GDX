@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ncgeek.games.shattered.shapes.IShape;
+import com.ncgeek.games.shattered.utils.Dialog;
 import com.ncgeek.games.shattered.utils.ShatteredMap;
 
 public class Mob extends EntitySprite {
@@ -69,7 +70,7 @@ public class Mob extends EntitySprite {
 		body.createFixture(fixture);
 		shape.dispose();
 		
-		getOffset().set(-32 * unitScale, -8 * unitScale);
+		getOffset().set(-32 * unitScale, -10 * unitScale);
 	}
 
 	public void turn() {
@@ -110,4 +111,9 @@ public class Mob extends EntitySprite {
 	public void move(float x, float y) {
 		getVelocity().set(x, y);
 	}	
+	
+	@Override
+	public void interact(EntitySprite target) {
+		Dialog.showDialog("Hello there. This is a really long sentance\n that I am sure that you have no interest in at all.");
+	}
 }
