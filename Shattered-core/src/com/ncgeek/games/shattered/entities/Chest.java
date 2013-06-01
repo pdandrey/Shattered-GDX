@@ -69,12 +69,24 @@ public class Chest extends EntitySprite {
 		super.draw(batch, unitScale);
 	}
 
+	private int counter = 0;
 	@Override
 	public void interact(EntitySprite target) {
 		if(!isOpened) {
 			setIsAnimating(true);
 			Dialog.showDialog("You obtain an item");
 			isOpened = true;
-		} 
+		} else {
+			String[] responses = new String[] {
+					"The chest is empty.",
+					"You've already taken everything from here.",
+					"Alas, nothing more remains.",
+					"Careful, chests are known for just sitting there... empty.",
+					"The gazebo eats you!"
+			};
+			
+			Dialog.showDialog(responses[counter]);
+			counter = (counter + 1) % responses.length;
+		}
 	}
 }

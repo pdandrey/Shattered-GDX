@@ -8,9 +8,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -22,14 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.esotericsoftware.tablelayout.Cell;
 import com.ncgeek.games.shattered.entities.Chest;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.utils.ActionListener;
@@ -41,6 +34,7 @@ import com.ncgeek.games.shattered.utils.ShatteredMapLoader;
 
 public class Shattered implements ApplicationListener {
 
+	@SuppressWarnings("unused")
 	private final static String LOG_TAG = "Shattered";
 	private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	
@@ -190,6 +184,7 @@ public class Shattered implements ApplicationListener {
 		parent.setFillParent(true);
 		parent.debug();
 		
+		
 		TextButton btnMenu = new TextButton("Menu", skin);
 		parent.add(btnMenu).top().right();
 		
@@ -226,7 +221,8 @@ public class Shattered implements ApplicationListener {
 		
 		Label l = new Label("", skin, "dialog");
 		l.setWrap(true);
-		l.setSize(stage.getWidth(), 100);
+		l.setSize(stage.getWidth() - 10, 100);
+		l.setPosition(5, 5);
 		l.setAlignment(Align.top | Align.left);
 		l.setVisible(false);
 		Dialog.init(l);
