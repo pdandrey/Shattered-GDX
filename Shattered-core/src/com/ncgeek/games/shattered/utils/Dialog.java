@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class Dialog {
@@ -12,16 +13,17 @@ public class Dialog {
 	private static final String LOG_TAG = "Dialog";
 	private static final Dialog INSTANCE = new Dialog();
 	
-	public static void init(Label label) {
-		INSTANCE.label = label;
-		label.setVisible(false);
+	public static void init(ScrollPane scroll) {
+		INSTANCE.scroll = scroll;
+		INSTANCE.label = (Label)scroll.findActor("lblDialog");
+		scroll.setVisible(false);
 		
-		label.addListener(new InputListener() {
+		scroll.addListener(new InputListener() {
 
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if(keycode == Keys.ENTER) {
-					INSTANCE.hide();
+					INSTANCE.progress();
 				}
 				return true;
 			}
@@ -38,12 +40,12 @@ public class Dialog {
 			
 		});
 		
-		label.addListener(new ClickListener() {
+		scroll.addListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				event.handle();
-				INSTANCE.hide();
+				INSTANCE.progress();
 			}
 			
 		});
@@ -54,18 +56,38 @@ public class Dialog {
 	}
 	
 	private Label label;
+	private ScrollPane scroll;
+	
+	private DialogListener callback;
+	private int converstationID;
 	
 	private Dialog() {}
 	
 	public void setText(String text) {
+		setText(text, null, -1);
+	}
+	
+	public void setText(String text, DialogListener callback, int conversationID) {
+		this.callback = callback;
+		this.converstationID = conversationID;
+		scroll.setScrollY(0);
 		label.setText(text);
-		label.setVisible(true);
+		label.getTextBounds();
+		scroll.setVisible(true);
 		label.getStage().setKeyboardFocus(label);
 	}
 	
-	public void hide() {
-		label.setText("");
-		label.setVisible(false);
-		label.getStage().setKeyboardFocus(null);
+	public void progress() {
+		if(scroll.getScrollPercentY() == 1) {
+			label.setText("");
+			scroll.setVisible(false);
+			label.getStage().setKeyboardFocus(null);
+			
+			if(callback != null) {
+				callback.dialogFinished(converstationID);
+			}
+		} else {
+			scroll.setScrollY(scroll.getScrollY() + scroll.getHeight());
+		}
 	}
 }

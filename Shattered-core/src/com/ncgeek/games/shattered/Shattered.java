@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -218,14 +219,17 @@ public class Shattered implements ApplicationListener {
 		}
 		
 		stage.addActor(parent);
-		
-		Label l = new Label("", skin, "dialog");
+
+		Label l = new Label("", skin);
+		l.setName("lblDialog");
 		l.setWrap(true);
-		l.setSize(stage.getWidth() - 10, 100);
-		l.setPosition(5, 5);
 		l.setAlignment(Align.top | Align.left);
-		l.setVisible(false);
-		Dialog.init(l);
-		stage.addActor(l);
+		
+		ScrollPane p = new ScrollPane(l, skin, "dialog");
+		p.setSize(stage.getWidth() - 10, 100);
+		p.setPosition(5, 5);
+		Dialog.init(p);
+		p.setFadeScrollBars(false);
+		stage.addActor(p);
 	}
 }

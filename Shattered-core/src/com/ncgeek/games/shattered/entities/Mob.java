@@ -114,6 +114,6 @@ public class Mob extends EntitySprite {
 	
 	@Override
 	public void interact(EntitySprite target) {
-		Dialog.showDialog("Hello there. This is a really long sentance that I am sure that you have no interest in at all.");
+		Dialog.showDialog("Hello there. This is a really long sentance that I am sure that you have no interest in at all.\n\nWord 1\nWord 2\nWord 3\nWord 4\nWord 5\nWord 6\nWord 7");
 	}
 }
