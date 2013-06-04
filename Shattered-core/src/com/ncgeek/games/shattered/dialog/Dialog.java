@@ -1,4 +1,4 @@
-package com.ncgeek.games.shattered.utils;
+package com.ncgeek.games.shattered.dialog;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -51,8 +51,8 @@ public class Dialog {
 		});
 	}
 	
-	public static void showDialog(String text) {
-		INSTANCE.setText(text);
+	public static Dialog getInstance() {
+		return INSTANCE;
 	}
 	
 	private Label label;
@@ -78,7 +78,7 @@ public class Dialog {
 	}
 	
 	public void progress() {
-		if(scroll.getScrollPercentY() == 1) {
+		if(!scroll.isScrollY() || scroll.getScrollPercentY() == 1) {
 			label.setText("");
 			scroll.setVisible(false);
 			label.getStage().setKeyboardFocus(null);

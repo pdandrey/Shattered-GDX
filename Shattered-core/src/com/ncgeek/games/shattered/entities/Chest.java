@@ -8,8 +8,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.shapes.IShape;
-import com.ncgeek.games.shattered.utils.Dialog;
 import com.ncgeek.games.shattered.utils.Log;
 
 public class Chest extends EntitySprite {
@@ -74,7 +74,7 @@ public class Chest extends EntitySprite {
 	public void interact(EntitySprite target) {
 		if(!isOpened) {
 			setIsAnimating(true);
-			Dialog.showDialog("You obtain an item");
+			Dialog.getInstance().setText("You obtain an item");
 			isOpened = true;
 		} else {
 			String[] responses = new String[] {
@@ -85,7 +85,7 @@ public class Chest extends EntitySprite {
 					"The gazebo eats you!"
 			};
 			
-			Dialog.showDialog(responses[counter]);
+			Dialog.getInstance().setText(responses[counter]);
 			counter = (counter + 1) % responses.length;
 		}
 	}
