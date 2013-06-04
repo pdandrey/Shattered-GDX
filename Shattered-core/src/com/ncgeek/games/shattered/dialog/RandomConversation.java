@@ -34,6 +34,9 @@ public class RandomConversation extends Conversation {
 	public void begin() {
 		int n = Rand.next(100);
 		int idx = Arrays.binarySearch(weights, n);
+		if(idx < 0) {
+			idx = Math.max(0, Math.min(weights.length-1, -idx - 1));
+		}
 		Dialog.getInstance().setText(getLine(idx));
 	}
 	
