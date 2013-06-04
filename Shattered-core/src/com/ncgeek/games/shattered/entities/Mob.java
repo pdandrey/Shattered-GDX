@@ -1,7 +1,5 @@
 package com.ncgeek.games.shattered.entities;
 
-import java.net.URLDecoder;
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,12 +8,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Json;
 import com.ncgeek.games.shattered.dialog.Conversation;
-import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.shapes.IShape;
-import com.ncgeek.games.shattered.utils.ShatteredMap;
 
 public class Mob extends EntitySprite {
 
@@ -54,19 +49,12 @@ public class Mob extends EntitySprite {
 		
 		setCurrentAnimation("walksouth");
 		
-		final String defaultConv = "[\"Hello there. This is a really long sentance that I am sure that you have no interest in at all.\n\nWord 1\nWord 2\nWord 3\nWord 4\nWord 5\nWord 6\nWord 7\"]";
+		final String defaultConv = "{lines:[\"Hello there. This is a really long sentance that I am sure that you have no interest in at all.\n\nWord 1\nWord 2\nWord 3\nWord 4\nWord 5\nWord 6\nWord 7\"]}";
 		
-		JsonReader r = new JsonReader();
 		String c = props.get(CONVERSATION, defaultConv, String.class).replaceAll("&quot;", "\"");
 		
-		JsonValue json = r.parse(c);
-		String[] conv = new String[json.size];
-		int i;
-		JsonValue v;
-		for(i=0, v = json.child(); v != null; v = v.next(), ++i) {
-			conv[i] = v.asString();
-		}
-		conversation = new Conversation(conv);
+		Json j = new Json();
+		conversation = j.fromJson(Conversation.class, c);
 	}
 	
 	@Override
@@ -134,6 +122,6 @@ public class Mob extends EntitySprite {
 	
 	@Override
 	public void interact(EntitySprite target) {
-		conversation.being();
+		conversation.begin();
 	}
 }

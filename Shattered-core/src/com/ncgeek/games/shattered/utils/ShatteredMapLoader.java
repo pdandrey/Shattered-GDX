@@ -15,6 +15,8 @@ import com.ncgeek.games.shattered.shapes.Polyline;
 import com.ncgeek.games.shattered.shapes.Rectangle;
 
 public class ShatteredMapLoader extends TmxMapLoader {
+	
+	private static final String LOG_TAG = "ShatteredMapLoader";
 
 	private static HashMap<String, Class<? extends Sprite>> mapClasses = new HashMap<String, Class<? extends Sprite>>();
 	
@@ -97,7 +99,7 @@ public class ShatteredMapLoader extends TmxMapLoader {
 					object.load(props, bounds);
 					layer.getObjects().add(object);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.error(LOG_TAG, e, "Error loading object %s of type %s", element.getAttribute("name", "[no name]"), type);
 				}
 			} else {
 				super.loadObject(layer, element);
