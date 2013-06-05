@@ -41,7 +41,7 @@
     <property name="image" value="female_greendress"/>
    </properties>
   </object>
-  <object name="chest" type="chest" x="543" y="289" width="32" height="32">
+  <object name="chest" type="chest" x="543" y="289" width="32" height="24">
    <properties>
     <property name="chest_type" value="rounded"/>
    </properties>
@@ -51,10 +51,25 @@
     <property name="chest_type" value="square"/>
    </properties>
   </object>
-  <object name="sheep" type="mob" x="700" y="256" width="32" height="32">
+  <object name="sheep" type="livestock" x="800" y="225" width="32" height="32">
    <properties>
-    <property name="image" value="sheep"/>
     <property name="conversation" value="{class:com.ncgeek.games.shattered.dialog.RandomConversation,weights:[30,50,80,100],lines:[Baa,Baaa...,Baaaaaa,&quot;Baaa Raaam Ewwwe&quot;]}"/>
+    <property name="image" value="sheep"/>
+   </properties>
+  </object>
+  <object name="chicken" type="livestock" x="416" y="193" width="32" height="32">
+   <properties>
+    <property name="image" value="chicken"/>
+   </properties>
+  </object>
+  <object name="cow" type="livestock" x="929" y="126" width="32" height="32">
+   <properties>
+    <property name="image" value="cow"/>
+   </properties>
+  </object>
+  <object name="llama" type="livestock" x="130" y="127" width="32" height="32">
+   <properties>
+    <property name="image" value="llama"/>
    </properties>
   </object>
  </objectgroup>

@@ -22,10 +22,10 @@ public class Chest extends EntitySprite {
 	@Override
 	public void load(MapProperties props, IShape bounds) {
 		
-		if(!props.containsKey(Sprite.SPRITE_WIDTH))
+		//if(!props.containsKey(Sprite.SPRITE_WIDTH))
 			props.put(Sprite.SPRITE_WIDTH, 32);
-		if(!props.containsKey(Sprite.SPRITE_HEIGHT))
-			props.put(Sprite.SPRITE_HEIGHT, 32);
+		//if(!props.containsKey(Sprite.SPRITE_HEIGHT))
+			props.put(Sprite.SPRITE_HEIGHT, 24);
 		if(!props.containsKey(Sprite.SPRITE_IMAGE))
 			props.put(Sprite.SPRITE_IMAGE, "Chests");
 		
@@ -48,12 +48,10 @@ public class Chest extends EntitySprite {
 	public void setupBody(World world, float unitScale) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.StaticBody;
-		def.position.set(getPosition().scl(unitScale).cpy().add(16*unitScale, 16*unitScale));
-		Log.log(LOG_TAG, "%s", getPosition().toString());
+		def.position.set(getPosition().scl(unitScale)).add(getWidth()/2*unitScale, getHeight()/2*unitScale);
 		
 		PolygonShape shape = new PolygonShape();
-		float radius = 16f * unitScale;
-		shape.setAsBox(radius, radius);
+		shape.setAsBox(getWidth() / 2 * unitScale, getHeight() / 2 * unitScale);
 		
 		Body body = world.createBody(def);
 		setBody(body);
@@ -61,7 +59,7 @@ public class Chest extends EntitySprite {
 		body.createFixture(shape, 1);
 		shape.dispose();
 		
-		getOffset().set(-16 * unitScale, -16 * unitScale);
+		getOffset().set(-getWidth()/2 * unitScale, -getHeight()/2 * unitScale);
 	}
 	
 	@Override

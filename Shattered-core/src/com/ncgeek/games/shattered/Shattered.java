@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.entities.Chest;
+import com.ncgeek.games.shattered.entities.Livestock;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.utils.ActionListener;
 import com.ncgeek.games.shattered.utils.Log;
@@ -57,6 +58,7 @@ public class Shattered implements ApplicationListener {
 		
 		ShatteredMapLoader.addMapping("mob", Mob.class);
 		ShatteredMapLoader.addMapping("chest", Chest.class);
+		ShatteredMapLoader.addMapping("livestock", Livestock.class);
 		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();

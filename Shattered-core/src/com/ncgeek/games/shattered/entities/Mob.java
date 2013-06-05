@@ -25,8 +25,10 @@ public class Mob extends EntitySprite {
 	
 	@Override
 	public void load(MapProperties props, IShape bounds) {
-		props.put(Sprite.SPRITE_WIDTH, 64);
-		props.put(Sprite.SPRITE_HEIGHT, 64);
+		if(!props.containsKey(Sprite.SPRITE_WIDTH))
+			props.put(Sprite.SPRITE_WIDTH, 64);
+		if(!props.containsKey(SPRITE_HEIGHT))
+			props.put(Sprite.SPRITE_HEIGHT, 64);
 		
 		if(props.get(Sprite.SPRITE_IMAGE) == null)
 			props.put(Sprite.SPRITE_IMAGE, "female_greendress");
@@ -55,6 +57,8 @@ public class Mob extends EntitySprite {
 		
 		Json j = new Json();
 		conversation = j.fromJson(Conversation.class, c);
+		
+		getOffset().set(-32, -10);
 	}
 	
 	@Override
@@ -78,7 +82,7 @@ public class Mob extends EntitySprite {
 		body.createFixture(fixture);
 		shape.dispose();
 		
-		getOffset().set(-32 * unitScale, -10 * unitScale);
+		getOffset().scl(unitScale);
 	}
 
 	public void turn() {

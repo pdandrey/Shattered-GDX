@@ -21,7 +21,7 @@ public class Sprite extends MapObject implements Disposable, Comparable<Sprite> 
 	
 	private IShape bounds;
 	private Texture texture;
-	private float width, height;
+	private int width, height;
 	private Vector2 position;
 	
 	public Sprite() {}
@@ -67,6 +67,8 @@ public class Sprite extends MapObject implements Disposable, Comparable<Sprite> 
 	
 	public IShape getBounds() { return bounds; }
 	public Vector2 getPosition() { return position; }
+	public final int getWidth() { return width; }
+	public final int getHeight() { return height; }
 	
 	protected void loadImage(String image) {
 		if(texture != null)

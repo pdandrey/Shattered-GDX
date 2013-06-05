@@ -53,7 +53,7 @@ public abstract class EntitySprite extends AnimatedSprite {
 	
 	@Override
 	public void draw(SpriteBatch batch, float unitScale) {
-		getPosition().set(body.getPosition()).add(offset); //.scl(1f/unitScale));
+		getPosition().set(body.getPosition()).add(offset);
 		super.draw(batch, unitScale);
 	}
 }

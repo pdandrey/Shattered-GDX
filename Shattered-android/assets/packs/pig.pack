@@ -1,256 +1,228 @@
 
-cow.png
+pig.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 eateast
   rotate: false
-  xy: 0, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 0
-eateast
-  rotate: false
-  xy: 0, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-eateast
-  rotate: false
-  xy: 128, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 2
-eateast
-  rotate: false
-  xy: 0, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 3
-eatnorth
-  rotate: false
-  xy: 128, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 0
-eatnorth
-  rotate: false
-  xy: 256, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-eatnorth
-  rotate: false
-  xy: 0, 512
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 2
-eatnorth
-  rotate: false
-  xy: 128, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 3
-eatsouth
-  rotate: false
-  xy: 256, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 0
-eatsouth
-  rotate: false
-  xy: 384, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-eatsouth
-  rotate: false
   xy: 0, 384
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 2
-eatsouth
-  rotate: false
-  xy: 128, 512
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 3
-eatwest
-  rotate: false
-  xy: 256, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
   index: 0
-eatwest
-  rotate: false
-  xy: 384, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-eatwest
-  rotate: false
-  xy: 512, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 2
-eatwest
+eateast
   rotate: false
   xy: 0, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 3
-shadoweast
+  index: 1
+eateast
   rotate: false
   xy: 128, 384
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: -1
-shadownorth
-  rotate: false
-  xy: 256, 512
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-shadowsouth
-  rotate: false
-  xy: 384, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-shadowwest
-  rotate: false
-  xy: 512, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-walkeast
-  rotate: false
-  xy: 640, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 0
-walkeast
+  index: 2
+eateast
   rotate: false
   xy: 0, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 1
-walkeast
+  index: 3
+eatnorth
   rotate: false
   xy: 0, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 2
-walkeast
+  index: 0
+eatnorth
   rotate: false
   xy: 128, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 3
-walknorth
+  index: 1
+eatnorth
   rotate: false
   xy: 256, 384
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
-  index: 0
-walknorth
-  rotate: false
-  xy: 384, 512
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-walknorth
-  rotate: false
-  xy: 512, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
   index: 2
-walknorth
-  rotate: false
-  xy: 640, 768
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 3
-walksouth
-  rotate: false
-  xy: 768, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 0
-walksouth
-  rotate: false
-  xy: 896, 896
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: 1
-walksouth
+eatnorth
   rotate: false
   xy: 128, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
+  index: 3
+eatsouth
+  rotate: false
+  xy: 128, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+eatsouth
+  rotate: false
+  xy: 256, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+eatsouth
+  rotate: false
+  xy: 384, 384
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+eatsouth
+  rotate: false
+  xy: 256, 128
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+eatwest
+  rotate: false
+  xy: 256, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+eatwest
+  rotate: false
+  xy: 384, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+eatwest
+  rotate: false
+  xy: 512, 384
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+eatwest
+  rotate: false
+  xy: 384, 128
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+walkeast
+  rotate: false
+  xy: 384, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+walkeast
+  rotate: false
+  xy: 512, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+walkeast
+  rotate: false
+  xy: 640, 384
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+walkeast
+  rotate: false
+  xy: 512, 128
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+walknorth
+  rotate: false
+  xy: 512, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+walknorth
+  rotate: false
+  xy: 640, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+walknorth
+  rotate: false
+  xy: 768, 384
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+walknorth
+  rotate: false
+  xy: 896, 384
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+walksouth
+  rotate: false
+  xy: 640, 128
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 0
+walksouth
+  rotate: false
+  xy: 640, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+walksouth
+  rotate: false
+  xy: 768, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
   index: 2
 walksouth
   rotate: false
-  xy: 128, 0
+  xy: 896, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 3
 walkwest
   rotate: false
-  xy: 256, 256
+  xy: 768, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 0
 walkwest
   rotate: false
-  xy: 384, 384
+  xy: 768, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 1
 walkwest
   rotate: false
-  xy: 512, 512
+  xy: 896, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: 2
 walkwest
   rotate: false
-  xy: 640, 640
+  xy: 896, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
