@@ -42,13 +42,14 @@ public class Chest extends EntitySprite {
 		addAnimation(type, 0.15f, Animation.NORMAL);
 		setIsAnimating(false);
 		setCurrentAnimation(type);
+		getOffset().set(-getWidth()/2, -getHeight()/2);
 	}
 
 	@Override
 	public void setupBody(World world, float unitScale) {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.StaticBody;
-		def.position.set(getPosition().scl(unitScale)).add(getWidth()/2*unitScale, getHeight()/2*unitScale);
+		def.position.set(getPosition()).add(getWidth()/2, getHeight()/2).scl(unitScale);
 		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(getWidth() / 2 * unitScale, getHeight() / 2 * unitScale);
@@ -58,8 +59,6 @@ public class Chest extends EntitySprite {
 		
 		body.createFixture(shape, 1);
 		shape.dispose();
-		
-		getOffset().set(-getWidth()/2 * unitScale, -getHeight()/2 * unitScale);
 	}
 	
 	@Override

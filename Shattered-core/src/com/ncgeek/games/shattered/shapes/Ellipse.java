@@ -27,6 +27,16 @@ public class Ellipse extends com.badlogic.gdx.math.Ellipse implements IShape {
 	public float getY() {
 		return super.y;
 	}
+
+	@Override
+	public float getWidth() {
+		return super.width;
+	}
+
+	@Override
+	public float getHeight() {
+		return super.height;
+	}
 	
 	
 

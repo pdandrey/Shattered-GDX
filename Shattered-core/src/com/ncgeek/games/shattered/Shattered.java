@@ -143,7 +143,6 @@ public class Shattered implements ApplicationListener {
 			player.stand();
 		}
 		
-		clampCamera();
 		//camera.update();
 		map.render(camera);
 		
@@ -154,18 +153,12 @@ public class Shattered implements ApplicationListener {
 		font.draw(batch, String.format("FPS: %d, Camera: %f, %f, Player: %f, %f", Gdx.graphics.getFramesPerSecond(), camera.position.x, camera.position.y, pos.x, pos.y), 10, 20);
 		batch.end();
 		
+		if(map.isShowDebug())
+			map.drawDebug(camera);
+		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 //		Table.drawDebug(stage);
-	}
-	
-	public void clampCamera() {
-		camera.position.x = Math.max(camera.position.x, camera.viewportWidth / 2);
-		camera.position.x = Math.min(camera.position.x, map.getWidth() - camera.viewportWidth / 2);
-		camera.position.y = Math.max(camera.position.y, camera.viewportHeight / 2);
-		camera.position.y = Math.min(camera.position.y, map.getHeight() - camera.viewportHeight / 2);
-		
-		camera.update();
 	}
 
 	@Override

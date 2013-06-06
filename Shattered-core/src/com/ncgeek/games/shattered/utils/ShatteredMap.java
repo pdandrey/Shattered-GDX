@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -57,8 +59,10 @@ public class ShatteredMap implements Disposable {
 	private World world;
 	
 	private Box2DDebugRenderer b2renderer;
+	private ShapeRenderer shapeRenderer;
 	
 	public ShatteredMap(String mapName) {
+		shapeRenderer = new ShapeRenderer();
 		world = new World(new Vector2(0,0), true);
 		world.setContactListener(new CollisionListener());
 		
@@ -110,6 +114,15 @@ public class ShatteredMap implements Disposable {
 		world.dispose();
 	}
 	
+	private void clampCamera(OrthographicCamera camera) {
+		camera.position.x = Math.max(camera.position.x, camera.viewportWidth / 2);
+		camera.position.x = Math.min(camera.position.x, getWidth() - camera.viewportWidth / 2);
+		camera.position.y = Math.max(camera.position.y, camera.viewportHeight / 2);
+		camera.position.y = Math.min(camera.position.y, getHeight() - camera.viewportHeight / 2);
+		
+		camera.update();
+	}
+	
 	public List<MapObject> getEntityByName(String name) {
 		return entities.get("player");
 	}
@@ -130,11 +143,31 @@ public class ShatteredMap implements Disposable {
 		}
 		world.step(Gdx.graphics.getDeltaTime(), 3, 3);
 		
+		Vector3 old = camera.position.cpy();
+		camera.position.scl(UNIT_SCALE);
+		
+		clampCamera(camera);
 		renderer.setView(camera);
 		renderer.render();
 		
 		if(bDebug)
 			b2renderer.render(world, camera.combined);
+		
+		camera.position.set(old);
+	}
+	
+	public void drawDebug(OrthographicCamera camera) {
+		Vector3 old = camera.position.cpy();
+		camera.position.scl(UNIT_SCALE);
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		for(List<MapObject> lst : entities.values()) {
+			for(MapObject mo : lst) {
+				if(mo instanceof Sprite) {
+					((Sprite)mo).drawDebug(shapeRenderer, UNIT_SCALE);
+				}
+			}
+		}
+		camera.position.set(old);
 	}
 	
 	private void parseCollisions(MapLayer ml) {

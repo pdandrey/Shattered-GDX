@@ -81,7 +81,7 @@ public class ShatteredMapLoader extends TmxMapLoader {
 					}
 				} 
 				if(bounds == null) {
-					bounds = new Rectangle(x, yUp ? y - height : y, width/32, height/32);
+					bounds = new Rectangle(x, yUp ? y - height : y, width, height);
 				}
 				
 				props.put("name", element.getAttribute("name", null));

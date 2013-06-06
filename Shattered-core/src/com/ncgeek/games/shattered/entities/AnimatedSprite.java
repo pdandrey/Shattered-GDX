@@ -85,7 +85,7 @@ public class AnimatedSprite extends Sprite {
 	public void draw(SpriteBatch batch, float unitScale) {
 		if(currentAnimationKey != null) {
 			TextureRegion frame = mapAnimations.get(currentAnimationKey).getKeyFrame(stateTime);
-			Vector2 position = getPosition();
+			Vector2 position = getPosition().cpy().scl(unitScale);
 			batch.draw(frame, position.x, position.y, frame.getRegionWidth() * unitScale, frame.getRegionHeight() * unitScale);
 		} else {
 			Log.logOnce(LOG_TAG, "currentAnimationKey", "Attempt to draw without the current animation key set");

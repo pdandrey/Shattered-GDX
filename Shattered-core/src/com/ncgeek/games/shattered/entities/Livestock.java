@@ -2,6 +2,7 @@ package com.ncgeek.games.shattered.entities;
 
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.physics.box2d.World;
+import com.ncgeek.games.shattered.entities.movement.RandomMovement;
 import com.ncgeek.games.shattered.shapes.IShape;
 import com.ncgeek.games.shattered.utils.Log;
 
@@ -34,6 +35,7 @@ public class Livestock extends Mob {
 			getOffset().set(-64, -50);
 		}
 		
+		movement = new RandomMovement();
 	}
 
 	@Override

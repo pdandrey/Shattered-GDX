@@ -1,23 +1,37 @@
 package com.ncgeek.games.shattered.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
+import com.ncgeek.games.shattered.Shattered;
 import com.ncgeek.games.shattered.dialog.Conversation;
+import com.ncgeek.games.shattered.entities.movement.Movement;
 import com.ncgeek.games.shattered.shapes.IShape;
+import com.ncgeek.games.shattered.shapes.Rectangle;
+import com.ncgeek.games.shattered.utils.Log;
 
 public class Mob extends EntitySprite {
 
+	private static final String LOG_TAG = "Mob";
 	private static final String CONVERSATION = "conversation";
 	
 	private int dir = 0;
 	private Conversation conversation;
+	protected Movement movement;
+	protected boolean shouldMove = false;
 	
 	public Mob() {
 		super();
@@ -66,7 +80,7 @@ public class Mob extends EntitySprite {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.fixedRotation = false;
-		def.position.set(getPosition().scl(unitScale));
+		def.position.set(getPosition().cpy().scl(unitScale));
 		
 		CircleShape shape = new CircleShape();
 		shape.setRadius(10f * unitScale);
@@ -81,8 +95,6 @@ public class Mob extends EntitySprite {
 		
 		body.createFixture(fixture);
 		shape.dispose();
-		
-		getOffset().scl(unitScale);
 	}
 
 	public void turn() {
@@ -123,9 +135,51 @@ public class Mob extends EntitySprite {
 	public void move(float x, float y) {
 		getVelocity().set(x, y);
 	}	
+	public void move(Vector2 v) { getVelocity().set(v); }
 	
 	@Override
 	public void interact(EntitySprite target) {
+		//conversation.getLines()[0] = String.format("Position is %s\nBodyPosition is %s\nBounds are %s\nDestination is %s (left: %f)", getPosition().cpy().add(getOffset()).toString(), getBody().getPosition().cpy().scl(32f), getBounds(), movement == null ? "null" : movement.getDestination(), movement.getDestination().dst(getPosition().cpy().add(getOffset())));
 		conversation.begin();
+		shouldMove = true;
+		walk();
+	}
+	
+	@Override
+	public void update() {
+		if(movement != null) {
+			Vector2 pos = getBody().getPosition().scl(32);
+			if(movement.isAtDestination(pos)) {
+				movement.clearDestination();
+			} else {
+				if(!movement.hasDestination()) {
+					movement.getNextDestination(getBounds());
+				}
+				if(shouldMove) {
+					Vector2 d = movement.getDestination().sub(pos);
+					move(d.clamp(-1, 1));
+				}
+			}
+		}
+		super.update();
+	}
+
+	@Override
+	public void draw(SpriteBatch batch, float unitScale) {
+		super.draw(batch, unitScale);
+	}
+	
+	@Override
+	public void drawDebug(ShapeRenderer shape, float unitScale) {
+		shape.begin(ShapeType.Line);
+		shape.setColor(Color.RED);
+		shape.rect(getBounds().getX() * unitScale, getBounds().getY() * unitScale, getBounds().getWidth() * unitScale, getBounds().getHeight() * unitScale);
+		if(movement != null && movement.hasDestination()) {
+			shape.setColor(Color.GREEN);
+			Vector2 v = movement.getDestination().scl(unitScale);
+			Vector2 v1 = getBody().getPosition();
+			shape.line(v1.x, v1.y, v.x, v.y);
+		}
+		shape.end();
 	}
 }

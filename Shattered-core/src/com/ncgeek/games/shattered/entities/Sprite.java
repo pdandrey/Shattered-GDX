@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
@@ -12,6 +13,8 @@ import com.ncgeek.games.shattered.shapes.IShape;
 import com.ncgeek.games.shattered.utils.Log;
 
 public class Sprite extends MapObject implements Disposable, Comparable<Sprite>  {
+	
+	private static final String LOG_TAG = "Sprite";
 	
 	public static final String SPRITE_IMAGE = "image";
 	public static final String SPRITE_WIDTH = "spritewidth";
@@ -77,10 +80,14 @@ public class Sprite extends MapObject implements Disposable, Comparable<Sprite> 
 	}
 	
 	public void draw(SpriteBatch batch, float unitScale) {
-		batch.draw(texture, position.x, position.y);
+		Log.log(LOG_TAG, "%s pos %s", getName(), position.toString());
+		Vector2 p = position.cpy().scl(unitScale);
+		batch.draw(texture, p.x, p.y);
 	}
 	
 	public void update() { }
+	
+	public void drawDebug(ShapeRenderer shape, float unitScale) {}
 
 	@Override
 	public int compareTo(Sprite o) {
