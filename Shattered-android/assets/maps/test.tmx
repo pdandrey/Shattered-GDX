@@ -60,6 +60,7 @@
   <object name="chicken" type="livestock" x="416" y="193" width="32" height="32">
    <properties>
     <property name="image" value="chicken"/>
+    <property name="movement" value="{class:com.ncgeek.games.shattered.entities.movement.FreeroamMovement,maxX:50,maxY:50}"/>
    </properties>
   </object>
   <object name="cow" type="livestock" x="928" y="128" width="160" height="224">

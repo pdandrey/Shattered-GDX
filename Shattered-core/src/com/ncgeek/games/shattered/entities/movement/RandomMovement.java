@@ -11,7 +11,7 @@ public class RandomMovement extends Movement {
 	private static final int MAX_ATTEMPTS = 5;
 	
 	@Override
-	public void getNextDestination(IShape bounds) {
+	public void getNextDestination(Vector2 pos, IShape bounds) {
 		int minx = (int)bounds.getX();
 		int miny = (int)bounds.getY();
 		int maxx = minx + (int)bounds.getWidth();

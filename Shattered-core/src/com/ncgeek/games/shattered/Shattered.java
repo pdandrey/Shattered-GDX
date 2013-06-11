@@ -121,26 +121,12 @@ public class Shattered implements ApplicationListener {
 		}
 		
 		if(x != 0 || y != 0) {
-			player.walk();
-			if(player.isAnimating())
-				player.move(TOUCHPAD_MAX_SCROLL_SPEED * x, TOUCHPAD_MAX_SCROLL_SPEED * y);
-			
-			if(Math.abs(x) > Math.abs(y)) {
-				if(x > y)
-					player.turn(1);
-				else if(x < y)
-					player.turn(3);
-			} else {
-				if(y > x)
-					player.turn(2);
-				else if(y < x)
-					player.turn(0);
-			}
+			player.move(TOUCHPAD_MAX_SCROLL_SPEED * x, TOUCHPAD_MAX_SCROLL_SPEED * y);
 			
 			Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
 			camera.position.set(curr);
 		} else {
-			player.stand();
+			player.move(0,0);
 		}
 		
 		//camera.update();

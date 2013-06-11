@@ -27,15 +27,24 @@ public class Mob extends EntitySprite {
 
 	private static final String LOG_TAG = "Mob";
 	private static final String CONVERSATION = "conversation";
+	private static final String MOVEMENT = "movement";
+	private static final String SLEEP = "sleep";
+	private static final int DEFAULT_SLEEP = 15;
 	
 	private int dir = 0;
 	private Conversation conversation;
 	protected Movement movement;
 	protected boolean shouldMove = false;
 	
+	private float sleepTotal;
+	private float sleepCurrent;
+	private boolean bIsAsleep;
+	
 	public Mob() {
 		super();
 	}
+	
+	public final int getDirection() { return dir; }
 	
 	@Override
 	public void load(MapProperties props, IShape bounds) {
@@ -46,6 +55,10 @@ public class Mob extends EntitySprite {
 		
 		if(props.get(Sprite.SPRITE_IMAGE) == null)
 			props.put(Sprite.SPRITE_IMAGE, "female_greendress");
+		
+		sleepTotal = props.get(SLEEP, DEFAULT_SLEEP, Integer.class);
+		sleepCurrent = 0;
+		bIsAsleep = false;
 		
 		int x = (Integer)props.get("x");
 		int width = (Integer)props.get("width");
@@ -71,6 +84,11 @@ public class Mob extends EntitySprite {
 		
 		Json j = new Json();
 		conversation = j.fromJson(Conversation.class, c);
+		
+		String m = props.get(MOVEMENT, String.class);
+		if(m != null) {
+			movement = j.fromJson(Movement.class, m);
+		}
 		
 		getOffset().set(-32, -10);
 	}
@@ -134,31 +152,63 @@ public class Mob extends EntitySprite {
 	
 	public void move(float x, float y) {
 		getVelocity().set(x, y);
+		
+		if(x != 0 || y != 0) {
+			if(Math.abs(x) > Math.abs(y)) {
+				if(x > y)
+					turn(1);
+				else if(x < y)
+					turn(3);
+			} else {
+				if(y > x)
+					turn(2);
+				else if(y < x)
+					turn(0);
+			}
+			walk();
+		} else {
+			stand();
+		}
 	}	
-	public void move(Vector2 v) { getVelocity().set(v); }
+	public void move(Vector2 v) { move(v.x, v.y); }
+	
+	public final boolean isAsleep() { return bIsAsleep; }
+	public final void sleep() { bIsAsleep = true; sleepCurrent = 0; onSleep(); }
+	public final void wake() { bIsAsleep = false; onWake(); }
+	
+	protected void onSleep() {}
+	protected void onWake() {}
 	
 	@Override
 	public void interact(EntitySprite target) {
 		//conversation.getLines()[0] = String.format("Position is %s\nBodyPosition is %s\nBounds are %s\nDestination is %s (left: %f)", getPosition().cpy().add(getOffset()).toString(), getBody().getPosition().cpy().scl(32f), getBounds(), movement == null ? "null" : movement.getDestination(), movement.getDestination().dst(getPosition().cpy().add(getOffset())));
 		conversation.begin();
-		shouldMove = true;
 		walk();
 	}
 	
 	@Override
 	public void update() {
-		if(movement != null) {
-			Vector2 pos = getBody().getPosition().scl(32);
+		if(bIsAsleep) {
+			sleepCurrent += Gdx.graphics.getDeltaTime();
+			if(sleepCurrent > sleepTotal) {
+				sleepCurrent = 0;
+				wake();
+			}
+		}
+		if(!bIsAsleep && movement != null) {
+			Vector2 pos = getBody().getPosition().cpy().scl(32);
 			if(movement.isAtDestination(pos)) {
 				movement.clearDestination();
+				move(0,0);
+				sleep();
 			} else {
 				if(!movement.hasDestination()) {
-					movement.getNextDestination(getBounds());
+					movement.getNextDestination(getBody().getPosition().cpy().scl(32), getBounds());
 				}
-				if(shouldMove) {
+//				if(shouldMove) {
 					Vector2 d = movement.getDestination().sub(pos);
 					move(d.clamp(-1, 1));
-				}
+//				}
 			}
 		}
 		super.update();

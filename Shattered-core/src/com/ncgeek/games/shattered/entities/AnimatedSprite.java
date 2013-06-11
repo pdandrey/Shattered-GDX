@@ -31,6 +31,8 @@ public class AnimatedSprite extends Sprite {
 		currentAnimationKey = null;
 	}
 	
+	protected final TextureAtlas getAtlas() { return atlas; }
+	
 	public void load(MapProperties props, IShape bounds) {
 		super.load(props, bounds);
 	}
@@ -45,6 +47,10 @@ public class AnimatedSprite extends Sprite {
 	
 	public void addAnimation(String name, float animationSpeed, int animationType) {
 		Array<AtlasRegion> regions = atlas.findRegions(name);
+		addAnimation(name, regions, animationSpeed, animationType);
+	}
+	
+	public void addAnimation(String name, Array<AtlasRegion> regions, float animationSpeed, int animationType) {
 		if(regions != null && regions.size > 0) {
 			mapAnimations.put(name.toLowerCase(), new Animation(animationSpeed, regions, animationType));
 		} else {
@@ -54,14 +60,24 @@ public class AnimatedSprite extends Sprite {
 	
 	public void setCurrentAnimation(String name) {
 		name = name.toLowerCase();
-		if(mapAnimations.containsKey(name))
+		if(mapAnimations.containsKey(name)) {
 			currentAnimationKey = name;
+			stateTime = 0;
+		}
 	}
 	
 	public final void resetAnimation() { stateTime = 0f; }
 	
 	public final void setIsAnimating(boolean isAnimating) { _isAnimating = isAnimating; }
 	public final boolean isAnimating() { return _isAnimating; }
+	public final boolean isAnimationFinished() { 
+		if(currentAnimationKey != null) {
+			return mapAnimations.get(currentAnimationKey).isAnimationFinished(stateTime);
+		}
+		return false;
+	}
+	
+	protected void animationFinished(String key) {}
 	
 	@Override
 	public void dispose() {
@@ -84,9 +100,12 @@ public class AnimatedSprite extends Sprite {
 	@Override
 	public void draw(SpriteBatch batch, float unitScale) {
 		if(currentAnimationKey != null) {
-			TextureRegion frame = mapAnimations.get(currentAnimationKey).getKeyFrame(stateTime);
+			Animation anim = mapAnimations.get(currentAnimationKey);
+			TextureRegion frame = anim.getKeyFrame(stateTime);
 			Vector2 position = getPosition().cpy().scl(unitScale);
 			batch.draw(frame, position.x, position.y, frame.getRegionWidth() * unitScale, frame.getRegionHeight() * unitScale);
+			if(anim.isAnimationFinished(stateTime))
+				animationFinished(currentAnimationKey);
 		} else {
 			Log.logOnce(LOG_TAG, "currentAnimationKey", "Attempt to draw without the current animation key set");
 		}

@@ -29,11 +29,15 @@ public abstract class Movement {
 		destination.set(v); 
 		bHasDestination = true; 
 	}
+	public final void setDestination(float x, float y) {
+		destination.set(x,y);
+		bHasDestination = true;
+	}
 	
 	public final boolean hasDestination() { return bHasDestination; }
 	public boolean isAtDestination(Vector2 position) {
 		return position.dst(destination) <= tolerance;
 	}
 	
-	public abstract void getNextDestination(IShape bounds);
+	public abstract void getNextDestination(Vector2 position, IShape bounds);
 }
