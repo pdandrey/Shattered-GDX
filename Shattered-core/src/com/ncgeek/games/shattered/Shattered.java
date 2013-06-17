@@ -181,18 +181,7 @@ public class Shattered implements ApplicationListener {
 		
 		if(isTouchscreen) {
 			pad = new Touchpad(10f, skin);
-			pad.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					float x = Math.abs(pad.getKnobPercentX());
-					float y = Math.abs(pad.getKnobPercentY());
-					
-					if(x > 0 && y > 0)
-						player.walk();
-					else
-						player.stand();
-				}
-			});
+			
 			//parent.add(pad).expand().bottom().left();
 			parent.add(pad).expand().bottom().left();
 		} else {

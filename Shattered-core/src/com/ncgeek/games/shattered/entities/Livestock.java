@@ -10,10 +10,11 @@ import com.badlogic.gdx.utils.Array;
 import com.ncgeek.games.shattered.entities.movement.RandomMovement;
 import com.ncgeek.games.shattered.shapes.IShape;
 import com.ncgeek.games.shattered.utils.Log;
+import com.ncgeek.games.shattered.utils.Rand;
 import com.ncgeek.games.shattered.utils.Strings;
 
 public class Livestock extends Mob {
-
+	
 	private static final String LOG_TAG = "Livestock";
 	
 	@Override
@@ -48,6 +49,8 @@ public class Livestock extends Mob {
 		
 		if(movement == null)
 			movement = new RandomMovement();
+		
+		setState(State.MOVE);
 	}
 
 	@Override
@@ -62,53 +65,63 @@ public class Livestock extends Mob {
 
 	@Override
 	protected void onSleep() {
-		switch(getDirection()) {
-		case 0: setCurrentAnimation("eatsouth-start"); break;
-		case 1: setCurrentAnimation("eateast-start"); break;
-		case 2: setCurrentAnimation("eatknorth-start"); break;
-		case 3: setCurrentAnimation("eatwest-start"); break;
-		}
-		super.setIsAnimating(true);
+		eat();
+		//Log.log(LOG_TAG, "%s is now sleeping", getName());
+//		switch(getState()) {
+//			case MOVE:
+//				// do we idle or eat?
+//				//if(Rand.next() % 2 == 0)
+//					eat();
+////				else
+////					idle();
+//				break;
+//		
+//			default: break;
+//		}
 	}
 	
 	@Override
 	protected void onWake() {
-		switch(getDirection()) {
-		case 0: setCurrentAnimation("walksouth"); break;
-		case 1: setCurrentAnimation("walkeast"); break;
-		case 2: setCurrentAnimation("walknorth"); break;
-		case 3: setCurrentAnimation("walkwest"); break;
-		}
-		super.setIsAnimating(false);
+//		if(getState() == State.CUSTOM) {
+			setCurrentAnimation("eat"+ getDirection().toString().toLowerCase() + "-end");
+//		} else {
+//			walk();
+//		}
 	}
 	
 	@Override
 	protected void animationFinished(String key) {
-		if(key.startsWith("eat")) {
+		if(getState() == State.CUSTOM) {
 			String[] parts = key.split("-");
-			Log.log(LOG_TAG, Strings.join(", ", parts));
 			if(parts.length == 2) {
-				if(parts[1].equals("-start"))
+				if(parts[1].equals("start"))
 					setCurrentAnimation(parts[0]);
 				else
-					setCurrentAnimation(parts[0] + "-start");
-			} else {
-				setCurrentAnimation(parts[0] + "-end");
+					walk();
 			}
 		}
+	}
+	
+	private void eat() {
+		setCurrentAnimation("eat"+ getDirection().toString().toLowerCase() + "-start");
+		super.setIsAnimating(true);
+		setState(State.CUSTOM);
+	}
+	
+	public void walk() {
+		setState(State.MOVE);
 	}
 
 	private void addEatingAnimations(String name) {
 		Array<AtlasRegion> regions = getAtlas().findRegions(name);
 		Array<AtlasRegion> eating = new Array<AtlasRegion>();
 		
-		eating.add(regions.get(regions.size-2));
-		eating.add(regions.get(regions.size-1));
-		eating.addAll(eating);
-		eating.addAll(eating);
+		eating.add(regions.pop());
+		eating.add(regions.pop());
+		eating.reverse();
 		
-		super.addAnimation(name + "-start", regions, 0.35f, Animation.NORMAL);
-		super.addAnimation(name, 0.35f, Animation.NORMAL);
-		super.addAnimation(name + "-end", regions, 0.35f, Animation.REVERSED);
+		super.addAnimation(name + "-start", regions, 0.25f, Animation.NORMAL);
+		super.addAnimation(name, eating, 0.5f, Animation.LOOP);
+		super.addAnimation(name + "-end", regions, 0.25f, Animation.REVERSED);
 	}
 }

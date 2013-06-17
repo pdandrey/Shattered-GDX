@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
+import com.ncgeek.games.shattered.Direction;
 import com.ncgeek.games.shattered.Shattered;
 import com.ncgeek.games.shattered.dialog.Conversation;
 import com.ncgeek.games.shattered.entities.movement.Movement;
@@ -25,26 +26,30 @@ import com.ncgeek.games.shattered.utils.Log;
 
 public class Mob extends EntitySprite {
 
+	public enum State { IDLE, MOVE, CUSTOM }
+	
 	private static final String LOG_TAG = "Mob";
 	private static final String CONVERSATION = "conversation";
 	private static final String MOVEMENT = "movement";
 	private static final String SLEEP = "sleep";
-	private static final int DEFAULT_SLEEP = 15;
+	private static final int DEFAULT_SLEEP = 5;
 	
-	private int dir = 0;
+	private Direction dir = Direction.South;
 	private Conversation conversation;
 	protected Movement movement;
 	protected boolean shouldMove = false;
 	
 	private float sleepTotal;
 	private float sleepCurrent;
-	private boolean bIsAsleep;
+	private boolean bIsSleeping;
+	
+	private State state;
 	
 	public Mob() {
 		super();
 	}
 	
-	public final int getDirection() { return dir; }
+	public final Direction getDirection() { return dir; }
 	
 	@Override
 	public void load(MapProperties props, IShape bounds) {
@@ -58,7 +63,8 @@ public class Mob extends EntitySprite {
 		
 		sleepTotal = props.get(SLEEP, DEFAULT_SLEEP, Integer.class);
 		sleepCurrent = 0;
-		bIsAsleep = false;
+		state = State.IDLE;
+		bIsSleeping = false;
 		
 		int x = (Integer)props.get("x");
 		int width = (Integer)props.get("width");
@@ -115,39 +121,33 @@ public class Mob extends EntitySprite {
 		shape.dispose();
 	}
 
-	public void turn() {
-		turn((dir + 1) % 4);
-	}
+//	public void turn() {
+//		turn((dir + 1) % 4);
+//	}
 	
-	public void turn(int dir) {
+	public void turn(Direction dir) {
 		if(this.dir == dir)
 			return;
 		
 		this.dir = dir;
 		
 		switch(dir) {
-		case 0: setCurrentAnimation("walksouth"); break;
-		case 1: setCurrentAnimation("walkeast"); break;
-		case 2: setCurrentAnimation("walknorth"); break;
-		case 3: setCurrentAnimation("walkwest"); break;
+		case South: setCurrentAnimation("walksouth"); break;
+		case East: setCurrentAnimation("walkeast"); break;
+		case North: setCurrentAnimation("walknorth"); break;
+		case West: setCurrentAnimation("walkwest"); break;
 		}
 		resetAnimation();
 	}
 	
-	public void walk() {
-		if(isAnimating())
-			return;
-		
-		setIsAnimating(true);
-		resetAnimation();
-	}
-	public void stand() {
+	public void idle() {
 		if(!isAnimating())
 			return;
 		
 		setIsAnimating(false);
 		resetAnimation();
 		getVelocity().set(0, 0);
+		state = State.IDLE;
 	}
 	
 	public void move(float x, float y) {
@@ -155,26 +155,32 @@ public class Mob extends EntitySprite {
 		
 		if(x != 0 || y != 0) {
 			if(Math.abs(x) > Math.abs(y)) {
-				if(x > y)
-					turn(1);
-				else if(x < y)
-					turn(3);
+				if(x > 0)
+					turn(Direction.East);
+				else if(x < 0)
+					turn(Direction.West);
 			} else {
-				if(y > x)
-					turn(2);
-				else if(y < x)
-					turn(0);
+				if(y > 0)
+					turn(Direction.North);
+				else if(y < 0)
+					turn(Direction.South);
 			}
-			walk();
+			
+			if(!isAnimating()) {
+				setIsAnimating(true);
+				resetAnimation();
+				state = State.MOVE;
+			}
 		} else {
-			stand();
+			idle();
 		}
 	}	
 	public void move(Vector2 v) { move(v.x, v.y); }
 	
-	public final boolean isAsleep() { return bIsAsleep; }
-	public final void sleep() { bIsAsleep = true; sleepCurrent = 0; onSleep(); }
-	public final void wake() { bIsAsleep = false; onWake(); }
+	public final void sleep() { bIsSleeping = true; sleepCurrent = 0; onSleep(); }
+	public final void wake() { bIsSleeping = false; onWake(); }
+	public final State getState() { return state; }
+	public final void setState(State s) { state = s; }
 	
 	protected void onSleep() {}
 	protected void onWake() {}
@@ -183,19 +189,26 @@ public class Mob extends EntitySprite {
 	public void interact(EntitySprite target) {
 		//conversation.getLines()[0] = String.format("Position is %s\nBodyPosition is %s\nBounds are %s\nDestination is %s (left: %f)", getPosition().cpy().add(getOffset()).toString(), getBody().getPosition().cpy().scl(32f), getBounds(), movement == null ? "null" : movement.getDestination(), movement.getDestination().dst(getPosition().cpy().add(getOffset())));
 		conversation.begin();
-		walk();
+	}
+	
+	protected void checkSleep() {
+		if(bIsSleeping) {
+			sleepCurrent += Gdx.graphics.getDeltaTime();
+			if(sleepCurrent > sleepTotal) {
+				wake();
+			}
+		}
 	}
 	
 	@Override
 	public void update() {
-		if(bIsAsleep) {
-			sleepCurrent += Gdx.graphics.getDeltaTime();
-			if(sleepCurrent > sleepTotal) {
-				sleepCurrent = 0;
-				wake();
-			}
-		}
-		if(!bIsAsleep && movement != null) {
+		checkSleep();
+		checkMove();
+		super.update();
+	}
+	
+	private void checkMove() {
+		if(state == State.MOVE && movement != null) {
 			Vector2 pos = getBody().getPosition().cpy().scl(32);
 			if(movement.isAtDestination(pos)) {
 				movement.clearDestination();
@@ -205,13 +218,10 @@ public class Mob extends EntitySprite {
 				if(!movement.hasDestination()) {
 					movement.getNextDestination(getBody().getPosition().cpy().scl(32), getBounds());
 				}
-//				if(shouldMove) {
-					Vector2 d = movement.getDestination().sub(pos);
-					move(d.clamp(-1, 1));
-//				}
+				Vector2 d = movement.getDestination().sub(pos);
+				move(d.clamp(-1, 1));
 			}
 		}
-		super.update();
 	}
 
 	@Override

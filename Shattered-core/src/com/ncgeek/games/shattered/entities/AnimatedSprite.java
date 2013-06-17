@@ -63,6 +63,8 @@ public class AnimatedSprite extends Sprite {
 		if(mapAnimations.containsKey(name)) {
 			currentAnimationKey = name;
 			stateTime = 0;
+		} else {
+			Log.warn(LOG_TAG, "Could not find animation '%s' for '%s'", name, getName());
 		}
 	}
 	
