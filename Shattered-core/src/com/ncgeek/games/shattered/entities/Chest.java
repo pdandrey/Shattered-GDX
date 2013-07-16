@@ -42,7 +42,7 @@ public class Chest extends EntitySprite {
 		addAnimation(type, 0.15f, Animation.NORMAL);
 		setIsAnimating(false);
 		setCurrentAnimation(type);
-		getOffset().set(-getWidth()/2, -getHeight()/2);
+		setDrawingOffset(-getWidth()/2, -getHeight()/2);
 	}
 
 	@Override

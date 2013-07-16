@@ -38,7 +38,14 @@ public abstract class EntitySprite extends AnimatedSprite {
 	public final Body getBody() { return body; }
 	
 	public final Vector2 getVelocity() { return velocity; }
-	public final Vector2 getOffset() { return offset; }
+	
+	protected final void setDrawingOffset(float x, float y) {
+		getPosition().sub(offset).add(x, y);
+		offset.set(x, y);
+	}
+	protected final void setDrawingOffset(Vector2 offset) {
+		setDrawingOffset(offset.x, offset.y);
+	}
 	
 	public final EntitySprite getTarget() { return target; }
 	public final void setTarget(EntitySprite tgt) { target = tgt; }
@@ -53,7 +60,9 @@ public abstract class EntitySprite extends AnimatedSprite {
 	
 	@Override
 	public void draw(SpriteBatch batch, float unitScale) {
+		Vector2 old = getPosition().cpy();
 		getPosition().set(body.getPosition()).scl(1/unitScale).add(offset);
 		super.draw(batch, unitScale);
+		getPosition().set(old);
 	}
 }

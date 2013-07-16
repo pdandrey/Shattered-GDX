@@ -37,9 +37,9 @@ public class Livestock extends Mob {
 		super.load(props, bounds);
 		
 		if(image.equals("chicken")) {
-			getOffset().set(-16,-16);
+			setDrawingOffset(-16,-16);
 		} else {
-			getOffset().set(-64, -50);
+			setDrawingOffset(-64, -50);
 		}
 		
 		addEatingAnimations("eatsouth");

@@ -96,7 +96,7 @@ public class Mob extends EntitySprite {
 			movement = j.fromJson(Movement.class, m);
 		}
 		
-		getOffset().set(-32, -10);
+		setDrawingOffset(-32, -10);
 	}
 	
 	@Override
