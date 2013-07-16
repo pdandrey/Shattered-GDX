@@ -12,6 +12,6 @@ public class Main {
 		cfg.height = 600;
 		
 		com.ncgeek.games.shattered.utils.Log.setLogger(new Logger());
-		new LwjglApplication(new Shattered(), cfg);
+		new LwjglApplication(new GamepadTest(), cfg);
 	}
 }
