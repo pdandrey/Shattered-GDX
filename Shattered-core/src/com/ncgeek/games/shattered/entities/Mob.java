@@ -75,6 +75,11 @@ public class Mob extends EntitySprite {
 		y += 16;
 		props.put("y", y);
 		
+		if(!props.containsKey(SPRITE_OFFSET_X))
+			props.put(SPRITE_OFFSET_X, -32);
+		if(!props.containsKey(SPRITE_OFFSET_Y))
+			props.put(SPRITE_OFFSET_Y, -10);
+		
 		super.load(props, bounds);
 		
 		addAnimation("walknorth", 0.15f, Animation.LOOP);
@@ -95,8 +100,6 @@ public class Mob extends EntitySprite {
 		if(m != null) {
 			movement = j.fromJson(Movement.class, m);
 		}
-		
-		setDrawingOffset(-32, -10);
 	}
 	
 	@Override
@@ -104,7 +107,7 @@ public class Mob extends EntitySprite {
 		BodyDef def = new BodyDef();
 		def.type = BodyType.DynamicBody;
 		def.fixedRotation = false;
-		def.position.set(getPosition().cpy().scl(unitScale));
+		def.position.set(getPosition()).scl(unitScale);
 		
 		CircleShape shape = new CircleShape();
 		shape.setRadius(10f * unitScale);

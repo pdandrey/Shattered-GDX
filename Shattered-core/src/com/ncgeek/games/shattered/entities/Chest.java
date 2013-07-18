@@ -29,6 +29,9 @@ public class Chest extends EntitySprite {
 		if(!props.containsKey(Sprite.SPRITE_IMAGE))
 			props.put(Sprite.SPRITE_IMAGE, "Chests");
 		
+		props.put(SPRITE_OFFSET_X, -16);
+		props.put(SPRITE_OFFSET_Y, -12);
+		
 		super.load(props, bounds);
 		
 		String type = props.get(CHEST_TYPE, "", String.class).trim().toLowerCase();
@@ -42,7 +45,6 @@ public class Chest extends EntitySprite {
 		addAnimation(type, 0.15f, Animation.NORMAL);
 		setIsAnimating(false);
 		setCurrentAnimation(type);
-		setDrawingOffset(-getWidth()/2, -getHeight()/2);
 	}
 
 	@Override

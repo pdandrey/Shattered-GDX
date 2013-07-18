@@ -12,6 +12,9 @@ public abstract class EntitySprite extends AnimatedSprite {
 
 	private static final String LOG_TAG = "EntitySprite";
 	
+	protected static final String SPRITE_OFFSET_X = "sprite_offset_x";
+	protected static final String SPRITE_OFFSET_Y = "sprite_offset_y";
+	
 	private Body body;
 	private Vector2 velocity;
 	private Vector2 offset;
@@ -24,6 +27,9 @@ public abstract class EntitySprite extends AnimatedSprite {
 	}
 	
 	public void load(MapProperties props, IShape bounds) {
+		offset.x = (float)props.get(SPRITE_OFFSET_X, 0, Integer.class);
+		offset.y = (float)props.get(SPRITE_OFFSET_Y, 0, Integer.class);
+		
 		super.load(props, bounds);
 	}
 	

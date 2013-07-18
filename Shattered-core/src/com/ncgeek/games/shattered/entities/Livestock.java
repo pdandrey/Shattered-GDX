@@ -1,7 +1,5 @@
 package com.ncgeek.games.shattered.entities;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.MapProperties;
@@ -10,16 +8,15 @@ import com.badlogic.gdx.utils.Array;
 import com.ncgeek.games.shattered.entities.movement.RandomMovement;
 import com.ncgeek.games.shattered.shapes.IShape;
 import com.ncgeek.games.shattered.utils.Log;
-import com.ncgeek.games.shattered.utils.Rand;
-import com.ncgeek.games.shattered.utils.Strings;
 
 public class Livestock extends Mob {
 	
 	private static final String LOG_TAG = "Livestock";
+	private String image;
 	
 	@Override
 	public void load(MapProperties props, IShape bounds) {
-		String image = props.get(SPRITE_IMAGE, String.class);
+		image = props.get(SPRITE_IMAGE, String.class);
 		
 		if(image == null)
 			throw new IllegalArgumentException("Image is required");
@@ -29,18 +26,16 @@ public class Livestock extends Mob {
 		if(image.equals("chicken")) {
 			props.put(SPRITE_WIDTH, 64);
 			props.put(SPRITE_HEIGHT, 64);
+			props.put(SPRITE_OFFSET_X, -16);
+			props.put(SPRITE_OFFSET_Y, -16);
 		} else {
 			props.put(SPRITE_WIDTH, 128);
 			props.put(SPRITE_HEIGHT, 128);
+			props.put(SPRITE_OFFSET_X, -64);
+			props.put(SPRITE_OFFSET_Y, -50);
 		}
 		
 		super.load(props, bounds);
-		
-		if(image.equals("chicken")) {
-			setDrawingOffset(-16,-16);
-		} else {
-			setDrawingOffset(-64, -50);
-		}
 		
 		addEatingAnimations("eatsouth");
 		addEatingAnimations("eatnorth");
@@ -55,7 +50,10 @@ public class Livestock extends Mob {
 
 	@Override
 	public void setupBody(World world, float unitScale) {
-		super.setupBody(world, unitScale);
+		if(image.equals("chicken"))
+			super.setupBody(world, unitScale);
+		else
+			;
 	}
 
 	@Override
