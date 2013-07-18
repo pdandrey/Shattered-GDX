@@ -3,8 +3,15 @@ package com.ncgeek.games.shattered.entities;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.ncgeek.games.shattered.Direction;
 import com.ncgeek.games.shattered.entities.movement.RandomMovement;
 import com.ncgeek.games.shattered.shapes.IShape;
 import com.ncgeek.games.shattered.utils.Log;
@@ -31,8 +38,19 @@ public class Livestock extends Mob {
 		} else {
 			props.put(SPRITE_WIDTH, 128);
 			props.put(SPRITE_HEIGHT, 128);
-			props.put(SPRITE_OFFSET_X, -64);
-			props.put(SPRITE_OFFSET_Y, -50);
+			if(image.equals("cow")) {
+				props.put(SPRITE_OFFSET_X, -64);
+				props.put(SPRITE_OFFSET_Y, -55);
+			} else if(image.equals("pig")) {
+				props.put(SPRITE_OFFSET_X, -64);
+				props.put(SPRITE_OFFSET_Y, -60);
+			} else if(image.equals("sheep")) { 
+				props.put(SPRITE_OFFSET_X, -64);
+				props.put(SPRITE_OFFSET_Y, -60);
+			} else if(image.equals("llama")) {
+				props.put(SPRITE_OFFSET_X, -64);
+				props.put(SPRITE_OFFSET_Y, -55);
+			}
 		}
 		
 		super.load(props, bounds);
@@ -50,10 +68,45 @@ public class Livestock extends Mob {
 
 	@Override
 	public void setupBody(World world, float unitScale) {
+
 		if(image.equals("chicken"))
 			super.setupBody(world, unitScale);
-		else
-			;
+		else {
+			BodyDef def = new BodyDef();
+			def.type = BodyType.DynamicBody;
+			def.fixedRotation = true;
+			def.angle = (float)Math.toRadians(90);
+			def.position.set(getPosition()).scl(unitScale);
+			
+			float width = 0;
+			float height = 0;
+			
+			if(image.equals("cow")) {
+				width = 27 * unitScale;
+				height = 11.5f * unitScale;
+			} else if(image.equals("pig")) {
+				width = 22 * unitScale;
+				height = 8 * unitScale;
+			} else if(image.equals("sheep") || image.equals("llama")) {
+				width = 18 * unitScale;
+				height = 10 * unitScale;
+			}
+			
+			PolygonShape shape = new PolygonShape();
+			shape.setAsBox(width, height);
+						
+			FixtureDef fixture = new FixtureDef();
+			fixture.shape = shape;
+			fixture.density = 1;
+			fixture.friction = 5;
+			
+			Body body = world.createBody(def);
+			setBody(body);
+			
+			body.createFixture(fixture);
+			shape.dispose();
+		}
+			
 	}
 
 	@Override
@@ -85,6 +138,29 @@ public class Livestock extends Mob {
 //		} else {
 //			walk();
 //		}
+	}
+	
+	@Override
+	public void turn(Direction dir) {
+		super.turn(dir);
+		if(!image.equals("chicken")) {
+			float angle = 0;
+			switch(dir) {
+				case East:
+					angle = 0;
+					break;
+				case North:
+					angle = 1.57079633f;
+					break;
+				case West:
+					angle = 3.14159265f;
+					break;
+				case South:
+					angle = 4.71238898f;
+					break;
+			} 
+			getBody().setTransform(getBody().getPosition(), angle);
+		}
 	}
 	
 	@Override
