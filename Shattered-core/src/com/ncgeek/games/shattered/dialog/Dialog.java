@@ -87,7 +87,7 @@ public class Dialog {
 				callback.dialogFinished(converstationID);
 			}
 		} else {
-			scroll.setScrollY(scroll.getScrollY() + scroll.getHeight());
+			scroll.setScrollY(scroll.getScrollY() + scroll.getHeight() - 20);
 		}
 	}
 }
