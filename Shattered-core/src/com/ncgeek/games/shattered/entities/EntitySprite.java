@@ -59,9 +59,10 @@ public abstract class EntitySprite extends AnimatedSprite {
 	
 	public abstract void interact(EntitySprite target);
 	
-	public void update() {
+	@Override
+	public void update(float delta) {
 		body.setLinearVelocity(velocity);
-		super.update();
+		super.update(delta);
 	}
 	
 	@Override

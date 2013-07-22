@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
+import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.entities.EntitySprite;
 import com.ncgeek.games.shattered.entities.Sprite;
 
@@ -49,8 +49,6 @@ public class ShatteredMap implements Disposable {
 	
 	private static final float UNIT_SCALE = 1f / 32f;
 	
-	private boolean bDebug = false;
-	
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private Color bgColor;
@@ -61,7 +59,10 @@ public class ShatteredMap implements Disposable {
 	private Box2DDebugRenderer b2renderer;
 	private ShapeRenderer shapeRenderer;
 	
+	private GameOptions options;
+	
 	public ShatteredMap(String mapName) {
+		options = new GameOptions();
 		shapeRenderer = new ShapeRenderer();
 		world = new World(new Vector2(0,0), true);
 		world.setContactListener(new CollisionListener());
@@ -130,18 +131,19 @@ public class ShatteredMap implements Disposable {
 	public final Color getBackgroundColor() { return bgColor; }
 	public final int getWidth() { return width; }
 	public final int getHeight() { return height; }
-	public final void setShowDebug(boolean show) { bDebug = show; }
-	public final boolean isShowDebug() { return bDebug; }
 	
-	public void render(OrthographicCamera camera) {
+	public void updateEntites(float delta) {
 		for(List<MapObject> lst : entities.values()) {
 			for(MapObject mo : lst) {
 				if(mo instanceof Sprite) {
-					((Sprite)mo).update();
+					((Sprite)mo).update(delta);
 				}
 			}
 		}
-		world.step(Gdx.graphics.getDeltaTime(), 3, 3);
+		world.step(delta, 3, 3);
+	}
+	
+	public void render(OrthographicCamera camera) {
 		
 		Vector3 old = camera.position.cpy();
 		camera.position.scl(UNIT_SCALE);
@@ -150,7 +152,7 @@ public class ShatteredMap implements Disposable {
 		renderer.setView(camera);
 		renderer.render();
 		
-		if(bDebug)
+		if(options.getDebugDraw())
 			b2renderer.render(world, camera.combined);
 		
 		camera.position.set(old);

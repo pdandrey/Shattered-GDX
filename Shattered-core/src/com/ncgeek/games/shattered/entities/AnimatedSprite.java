@@ -92,11 +92,11 @@ public class AnimatedSprite extends Sprite {
 	}
 	
 	@Override
-	public void update() {
-		super.update();
+	public void update(float delta) {
+		super.update(delta);
 		
 		if(_isAnimating)
-			stateTime += Gdx.graphics.getDeltaTime();
+			stateTime += delta;
 	}
 	
 	@Override

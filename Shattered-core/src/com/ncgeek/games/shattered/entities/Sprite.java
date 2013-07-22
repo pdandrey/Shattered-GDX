@@ -85,7 +85,7 @@ public class Sprite extends MapObject implements Disposable, Comparable<Sprite> 
 		batch.draw(texture, p.x, p.y);
 	}
 	
-	public void update() { }
+	public void update(float delta) { }
 	
 	public void drawDebug(ShapeRenderer shape, float unitScale) {}
 

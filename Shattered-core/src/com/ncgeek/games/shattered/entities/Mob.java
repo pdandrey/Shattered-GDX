@@ -204,10 +204,10 @@ public class Mob extends EntitySprite {
 	}
 	
 	@Override
-	public void update() {
+	public void update(float delta) {
 		checkSleep();
 		checkMove();
-		super.update();
+		super.update(delta);
 	}
 	
 	private void checkMove() {
