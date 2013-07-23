@@ -2,9 +2,6 @@ package com.ncgeek.games.shattered.screens;
 
 import com.badlogic.gdx.Gdx;
 
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,28 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
-import com.ncgeek.games.shattered.GameState;
 import com.ncgeek.games.shattered.IGameStateManager;
 
-public class GameMenu implements Screen {
+public class GameMenu extends ShatteredScreen {
 
 	private Stage stage;
-	private InputProcessor oldInput;
-	private InputMultiplexer input;
 	private GameOptions options;
 	
 	private TextButton btnDebug;
-	private IGameStateManager manager;
 	
 	public GameMenu(IGameStateManager manager) {
-		this.manager = manager;
+		super(manager);
+		
 		options = new GameOptions();
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		
 		stage = new Stage(w/2, h/2, false);
 		
-		input = new InputMultiplexer(stage);
+		addInputProcessor(stage);
 		
 		createUI();
 	}
@@ -50,29 +44,19 @@ public class GameMenu implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		super.resize(width, height);
 		stage.setViewport(width/2, height/2, true);
 	}
 
 	@Override
 	public void show() {
-		oldInput = Gdx.input.getInputProcessor();
-		Gdx.input.setInputProcessor(input);
+		super.show();
 		updateUI();
 	}
 
 	@Override
-	public void hide() {
-		Gdx.input.setInputProcessor(oldInput);
-	}
-
-	@Override
-	public void pause() {}
-
-	@Override
-	public void resume() {}
-
-	@Override
 	public void dispose() {
+		super.dispose();
 		stage.dispose();
 	}
 
@@ -103,12 +87,18 @@ public class GameMenu implements Screen {
 		btnClose.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				manager.setState(GameState.Game);
+				getManager().popScreen(null);
 			}
 		});
 	}
 	
 	private void updateUI() {
 		btnDebug.setText("Debug Drawing: " + (options.getDebugDraw() ? "on" : "off" ));
+	}
+
+	@Override
+	public void setParameter(Object parameter) {
+		// TODO Auto-generated method stub
+		
 	}
 }

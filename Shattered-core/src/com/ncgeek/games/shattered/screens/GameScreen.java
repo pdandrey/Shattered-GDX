@@ -1,8 +1,6 @@
 package com.ncgeek.games.shattered.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
-import com.ncgeek.games.shattered.GameState;
 import com.ncgeek.games.shattered.IGameStateManager;
 import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.entities.Mob;
@@ -30,7 +27,7 @@ import com.ncgeek.games.shattered.utils.Log;
 import com.ncgeek.games.shattered.utils.ShatteredController;
 import com.ncgeek.games.shattered.utils.ShatteredMap;
 
-public class GameScreen implements Screen {
+public class GameScreen extends ShatteredScreen {
 
 private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 
@@ -49,12 +46,17 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	
 	private boolean isTouchscreen = true;
 	
-	private IGameStateManager manager;
 	private GameOptions options;
 	
 	private boolean bPaused;
 	
+	private GameMenu screenMenu;
+	
 	public GameScreen(IGameStateManager manager) {
+		super(manager);
+		
+		screenMenu = new GameMenu(manager);
+		
 		bPaused = false;
 		options = new GameOptions();
 		float w = Gdx.graphics.getWidth();
@@ -76,8 +78,8 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		
 		stage = new Stage(w/2, h/2, false);
 		
-		InputMultiplexer input = new InputMultiplexer(stage, controller);
-		Gdx.input.setInputProcessor(input);
+		addInputProcessor(stage);
+		addInputProcessor(controller);
 		
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -92,8 +94,6 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		camera.position.set(curr);
 		
 		//isTouchscreen = Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen);
-		
-		this.manager = manager;
 	}
 	
 	@Override
@@ -157,7 +157,7 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		btnMenu.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				manager.setState(GameState.Menu);
+				getManager().pushScreen(screenMenu);
 				//map.setShowDebug(!map.isShowDebug());
 			}
 		});
@@ -193,28 +193,37 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 
 	@Override
 	public void show() {
+		super.show();
 		resume();
 	}
 
 	@Override
 	public void hide() {
+		super.hide();
 		pause();
 	}
 
 	@Override
 	public void pause() {
+		super.pause();
 		bPaused = true;
 	}
 
 	@Override
 	public void resume() {
+		super.pause();
 		bPaused = false;
 	}
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		batch.dispose();
 		map.dispose();
+	}
+
+	@Override
+	public void setParameter(Object parameter) {
 	}
 
 }

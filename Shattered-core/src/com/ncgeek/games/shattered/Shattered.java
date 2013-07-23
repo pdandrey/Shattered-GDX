@@ -1,13 +1,17 @@
 package com.ncgeek.games.shattered;
 
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.ncgeek.games.shattered.entities.Chest;
 import com.ncgeek.games.shattered.entities.Livestock;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.screens.GameMenu;
 import com.ncgeek.games.shattered.screens.GameScreen;
 import com.ncgeek.games.shattered.screens.MainMenu;
+import com.ncgeek.games.shattered.screens.ShatteredScreen;
 import com.ncgeek.games.shattered.utils.Log;
 import com.ncgeek.games.shattered.utils.ShatteredMapLoader;
 
@@ -19,44 +23,41 @@ public class Shattered extends Game implements IGameStateManager {
 	
 	private GameScreen screenGame;
 	private MainMenu screenMainMenu;
-	private GameMenu screenMenu;
+	
+	private LinkedList<ShatteredScreen> stackScreens;
 	
 	@Override
 	public void create() {		
+		
+		stackScreens = new LinkedList<ShatteredScreen>();
+		
+		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCatchMenuKey(true);
 		
 		ShatteredMapLoader.addMapping("mob", Mob.class);
 		ShatteredMapLoader.addMapping("chest", Chest.class);
 		ShatteredMapLoader.addMapping("livestock", Livestock.class);
 		
 		screenGame = new GameScreen(this);
-		screenMenu = new GameMenu(this);
 		setScreen(screenGame);
 		state = GameState.Game;
 	}
 	
-	public void setState(GameState newState) {
-		if(state == newState)
+	@Override
+	public void pushScreen(ShatteredScreen screen) {
+		stackScreens.push((ShatteredScreen)getScreen());
+		setScreen(screen);
+	}
+
+	@Override
+	public void popScreen(Object returnValue) {
+		if(stackScreens.size() == 0) {
+			Gdx.app.exit();
 			return;
-		
-		switch(newState) {
-			case SplashScreen:
-				Log.error(LOG_TAG, "Cannot set state to SplashScreen after the game has started.");
-				return;
-				
-			case MainMenu:
-				setScreen(screenMainMenu);
-				break;
-				
-			case Game:
-				setScreen(screenGame);
-				break;
-				
-			case Menu:
-				setScreen(screenMenu);
-				break;
 		}
 		
-		Log.debug(LOG_TAG, "Switching from state %s to %s", state.toString(), newState.toString());
-		state = newState;
+		ShatteredScreen s = stackScreens.pop();
+		s.setParameter(returnValue);
+		setScreen(s);
 	}
 }
