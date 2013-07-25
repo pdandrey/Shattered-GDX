@@ -125,7 +125,7 @@ public class ShatteredMap implements Disposable {
 	}
 	
 	public List<MapObject> getEntityByName(String name) {
-		return entities.get("player");
+		return entities.get(name.toLowerCase());
 	}
 	
 	public final Color getBackgroundColor() { return bgColor; }

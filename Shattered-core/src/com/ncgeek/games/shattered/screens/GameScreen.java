@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
+import com.ncgeek.games.shattered.characters.Party;
+import com.ncgeek.games.shattered.characters.ShatteredCharacter;
 import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.utils.ActionListener;
@@ -52,10 +54,10 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	
 	private GameMenu screenMenu;
 	
+	private Party party;
+	
 	public GameScreen(IGameStateManager manager) {
 		super(manager);
-		
-		screenMenu = new GameMenu(manager);
 		
 		bPaused = false;
 		options = new GameOptions();
@@ -92,6 +94,9 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		player.update(0f);
 		Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
 		camera.position.set(curr);
+		
+		loadParty();
+		screenMenu = new GameMenu(manager, party);
 		
 		//isTouchscreen = Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen);
 	}
@@ -186,6 +191,29 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		Dialog.init(p);
 		p.setFadeScrollBars(false);
 		stage.addActor(p);
+	}
+	
+	private void loadParty() {
+		party = new Party();
+		ShatteredCharacter sc = new ShatteredCharacter();
+		sc.setName("Player");
+		sc.setSoul("Tester");
+		sc.setAnimation(player.getAnimation("walksouth"));
+		party.add(sc);
+		
+		Mob m = (Mob)map.getEntityByName("princess").get(0);
+		sc = new ShatteredCharacter();
+		sc.setName(m.getName());
+		sc.setSoul("Royalty");
+		sc.setAnimation(m.getAnimation("walksouth"));
+		party.add(sc);
+		
+		m = (Mob)map.getEntityByName("anna").get(0);
+		sc = new ShatteredCharacter();
+		sc.setName(m.getName());
+		sc.setSoul("Fashionista");
+		sc.setAnimation(m.getAnimation("walksouth"));
+		party.add(sc);
 	}
 
 	@Override

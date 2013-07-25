@@ -67,6 +67,15 @@ public class AnimatedSprite extends Sprite {
 			Log.warn(LOG_TAG, "Could not find animation '%s' for '%s'", name, getName());
 		}
 	}
+	public String getCurrentAnimation() { return currentAnimationKey; }
+	public Animation getAnimation(String name) {
+		name = name.toLowerCase();
+		if(mapAnimations.containsKey(name)) {
+			return mapAnimations.get(currentAnimationKey);
+		} else {
+			return null;
+		}
+	}
 	
 	public final void resetAnimation() { stateTime = 0f; }
 	

@@ -8,7 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.ncgeek.games.shattered.entities.Chest;
 import com.ncgeek.games.shattered.entities.Livestock;
 import com.ncgeek.games.shattered.entities.Mob;
-import com.ncgeek.games.shattered.screens.GameMenu;
 import com.ncgeek.games.shattered.screens.GameScreen;
 import com.ncgeek.games.shattered.screens.MainMenu;
 import com.ncgeek.games.shattered.screens.ShatteredScreen;
