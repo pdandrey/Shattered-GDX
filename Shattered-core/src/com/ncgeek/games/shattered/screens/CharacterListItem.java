@@ -1,11 +1,14 @@
 package com.ncgeek.games.shattered.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -30,11 +33,14 @@ public class CharacterListItem extends WidgetGroup {
 	private Label txtSoul;
 	private float stateTime = 0f;
 	
+	private boolean selected;
+	
 	private ImmediateModeRenderer debugRenderer;
 		
 	public CharacterListItem(ShatteredCharacter character, Skin skin) {
 		super();
 		
+		selected = false;
 		drawable = new TextureRegionDrawable();
 		image = new Image(drawable);
 		
@@ -61,6 +67,9 @@ public class CharacterListItem extends WidgetGroup {
 	}
 	
 	public ShatteredCharacter getCharacter() { return character; }
+	
+	public boolean isSelected() { return selected; }
+	public void setSelected(boolean isSelected) { selected = isSelected; }
 
 	@Override
 	public float getPrefWidth() {
@@ -108,6 +117,17 @@ public class CharacterListItem extends WidgetGroup {
 		drawable.setRegion(character.getAnimation().getKeyFrame(stateTime));
 		
 		super.draw(batch, parentAlpha);
+		
+		if(selected) {
+			batch.end();
+			ShapeRenderer shape = new ShapeRenderer();
+			shape.setProjectionMatrix(batch.getProjectionMatrix());
+			shape.begin(ShapeType.Line);
+			shape.setColor(Color.YELLOW);
+			shape.rect(getX() + getParent().getParent().getX(), getY() + getParent().getParent().getY(), getPrefWidth(), getPrefHeight());
+			shape.end();
+			batch.begin();
+		}
 	}
 	
 	public void drawDebug (SpriteBatch batch) {

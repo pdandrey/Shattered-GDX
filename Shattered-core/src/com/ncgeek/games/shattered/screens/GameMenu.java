@@ -109,10 +109,11 @@ public class GameMenu extends ShatteredScreen {
 		PartyLayout layout = new PartyLayout();
 		
 		CharacterListItem cli = null;
-		
-		for(ShatteredCharacter sc : party.getParty()) {
-			cli = new CharacterListItem(sc, skin);
-			layout.add(cli);
+		for(int i=0; i<1; ++i) {
+			for(ShatteredCharacter sc : party.getParty()) {
+				cli = new CharacterListItem(sc, skin);
+				layout.add(cli);
+			}
 		}
 		
 		for(ShatteredCharacter sc : party.getReserves()) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.ncgeek.games.shattered.utils.Log;
 
 public class PartyLayout extends WidgetGroup {
 	
@@ -13,6 +14,9 @@ public class PartyLayout extends WidgetGroup {
 	
 	public void add(CharacterListItem cli) {
 		super.addActor(cli);
+		
+		if(getChildren().size == 1)
+			cli.setSelected(true);
 	}
 	
 	public void addActor(Actor a) {
@@ -39,11 +43,12 @@ public class PartyLayout extends WidgetGroup {
 		
 		setWidth(PER_ROW * cli.getPrefWidth());
 		setHeight(Math.max(((ScrollPane)getParent()).getHeight(), (ROWS) * cli.getPrefHeight()));
+		//setHeight(ROWS * cli.getPrefHeight());
+		Log.log("PartyLayout", "Parent: %f, Rows: %d, RowHeight: %f", ((ScrollPane)getParent()).getHeight(),ROWS,  (ROWS) * cli.getPrefHeight());
 		
 		float x = 0;
 		float y = getHeight() - cli.getPrefHeight();
-		
-		
+				
 		for(Actor a : children) {
 			cli = (CharacterListItem)a;
 			cli.validate();
