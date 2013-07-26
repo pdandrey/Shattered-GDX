@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
@@ -24,8 +23,6 @@ public class GameMenu extends ShatteredScreen {
 	
 	private TextButton btnDebug;
 	private Party party;
-	
-	private java.util.ArrayList<CharacterListItem> lst = new java.util.ArrayList<CharacterListItem>();
 	
 	public GameMenu(IGameStateManager manager, Party party) {
 		super(manager);
@@ -62,10 +59,6 @@ public class GameMenu extends ShatteredScreen {
 	public void show() {
 		super.show();
 		updateUI();
-		
-		for(CharacterListItem cli : lst) {
-			cli.size();
-		}
 	}
 
 	@Override
@@ -80,7 +73,6 @@ public class GameMenu extends ShatteredScreen {
 		Table parent = new Table(skin);
 		
 		parent.setFillParent(true);
-		stage.addActor(parent);
 		
 		parent.add(createPartyList(skin)).colspan(3).expand().fill();
 		parent.add("stats").width(200).fill();
@@ -114,46 +106,22 @@ public class GameMenu extends ShatteredScreen {
 	}
 	
 	private Actor createPartyList(Skin skin) {
-		Table tbl = new Table();
-		tbl.setFillParent(true);
-		//tbl.debug();
+		PartyLayout layout = new PartyLayout();
 		
-		int i = 0;
-		final int MAX_COLS = 2;
 		CharacterListItem cli = null;
 		
 		for(ShatteredCharacter sc : party.getParty()) {
-			if(i >= MAX_COLS) {
-				tbl.row();
-				i = 0;
-			}
 			cli = new CharacterListItem(sc, skin);
-			cli.top().left();
-			cli.debug();
-			//tbl.add(cli).left();
-			lst.add(cli);
-			++i;
-			break;
+			layout.add(cli);
 		}
 		
-//		for(ShatteredCharacter sc : party.getReserves()) {
-//			if(i >= MAX_COLS) {
-//				tbl.row();
-//				i = 0;
-//			}
-//			CharacterListItem cli = new CharacterListItem(sc, skin);
-//			cli.debug();
-//			tbl.add(cli);
-//			lst.add(cli);
-//			++i;
-//		}
+		for(ShatteredCharacter sc : party.getReserves()) {
+			cli = new CharacterListItem(sc, skin);
+			layout.add(cli);
+		}
 		
-//		while(i < MAX_COLS) {
-//			tbl.add();
-//			++i;
-//		}
-		
-		ScrollPane pane = new ScrollPane(cli, skin);
+		ScrollPane pane = new ScrollPane(layout, skin);
+		pane.setFadeScrollBars(false);
 		return pane;
 	}
 	
