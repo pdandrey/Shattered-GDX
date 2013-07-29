@@ -26,6 +26,9 @@ public class CharacterListItem extends WidgetGroup {
 
 	private static final String LOG_TAG = "CharacterListItem";
 	
+	public static final float WIDTH = 192f;
+	public static final float HEIGHT = 64f;
+	
 	private ShatteredCharacter character;
 	private Image image;
 	private TextureRegionDrawable drawable;
@@ -73,12 +76,12 @@ public class CharacterListItem extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth() {
-		return 192;
+		return WIDTH;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return 64;
+		return HEIGHT;
 	}
 
 	@Override

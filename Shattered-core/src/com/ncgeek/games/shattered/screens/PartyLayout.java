@@ -1,82 +1,83 @@
 package com.ncgeek.games.shattered.screens;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.ncgeek.games.shattered.utils.Log;
 
 public class PartyLayout extends WidgetGroup {
+
+	private static final String LOG_TAG = "PartyLayout";
+
+	private float prefWidth, prefHeight;
+	private int cols = 1;
+	private boolean sizeInvalid = true;
 	
-	public PartyLayout() {
-		super.setFillParent(false);
-	}
-	
-	public void add(CharacterListItem cli) {
-		super.addActor(cli);
-		
-		if(getChildren().size == 1)
-			cli.setSelected(true);
-	}
-	
-	public void addActor(Actor a) {
-		if(a instanceof CharacterListItem)
-			add((CharacterListItem)a);
-		else
-			throw new IllegalArgumentException("Actor must be a CharacterListItem");
+	public PartyLayout () {
+		setTouchable(Touchable.childrenOnly);
 	}
 
-	@Override
-	public void layout() {
+	public void invalidate () {
+		super.invalidate();
+		sizeInvalid = true;
+	}
+
+	private void computeSize () {
+		sizeInvalid = false;
+		prefWidth = 0;
+		prefHeight = 0;
+		float groupWidth = 0;
+		
+		// get the stage since getWidth() isn't reliable until layout();
+		float w = getStage().getWidth();
+		groupWidth = w - GameMenu.WIDTH_STATS;
+		
+		cols = Math.max(1, (int)(groupWidth / CharacterListItem.WIDTH));
+		prefWidth = cols * CharacterListItem.WIDTH;
+		
 		SnapshotArray<Actor> children = getChildren();
+		int rows = (int)Math.ceil((double)children.size / (double)cols);
+		prefHeight = rows * CharacterListItem.HEIGHT;
+
+	}
+
+	public void layout () {
+		float y = getHeight()-CharacterListItem.HEIGHT;
 		
-		if(children.size == 0)
-			return;
-		
-		CharacterListItem cli = (CharacterListItem)children.get(0);
-		cli.validate();
-		
-		final float width = getWidth();
-		final int PER_ROW = (int)(width / cli.getPrefWidth());
-		final int ROWS = (int)Math.ceil((double)children.size / (double)PER_ROW);
-		int count = 0;
-		
-		setWidth(PER_ROW * cli.getPrefWidth());
-		setHeight(Math.max(((ScrollPane)getParent()).getHeight(), (ROWS) * cli.getPrefHeight()));
-		//setHeight(ROWS * cli.getPrefHeight());
-		Log.log("PartyLayout", "Parent: %f, Rows: %d, RowHeight: %f", ((ScrollPane)getParent()).getHeight(),ROWS,  (ROWS) * cli.getPrefHeight());
-		
-		float x = 0;
-		float y = getHeight() - cli.getPrefHeight();
-				
-		for(Actor a : children) {
-			cli = (CharacterListItem)a;
-			cli.validate();
-			if(count >= PER_ROW) {
-				count = 0;
-				x = 0;
-				y -= cli.getPrefHeight();
+		SnapshotArray<Actor> children = getChildren();
+		for (int i = 0, n = children.size, c = 0; i < n; i++, c++) {
+			Actor child = children.get(i);
+			float width, height;
+			if (child instanceof Layout) {
+				Layout layout = (Layout)child;
+				width = layout.getPrefWidth();
+				height = layout.getPrefHeight();
+			} else {
+				width = child.getWidth();
+				height = child.getHeight();
 			}
 			
-			((CharacterListItem)a).layout();
-			a.setPosition(x, y);
-			x += cli.getPrefWidth();
-			++count;
+			if(c >= cols) {
+				y -= height;
+				c = 0;
+			}
+			
+			float x = c * CharacterListItem.WIDTH;
+			child.setBounds(x, y, width, height);
 		}
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return getWidth();
+	public float getPrefWidth () {
+		if (sizeInvalid) 
+			computeSize();
+		return prefWidth;
 	}
 
-	@Override
-	public float getPrefHeight() {
-		return getHeight();
-	}
-	
-	@Override
-	public void setFillParent(boolean fill) {
-		throw new IllegalArgumentException("setFillParent cannot be called");
+	public float getPrefHeight () {
+		if (sizeInvalid) 
+			computeSize();
+		return prefHeight;
 	}
 }

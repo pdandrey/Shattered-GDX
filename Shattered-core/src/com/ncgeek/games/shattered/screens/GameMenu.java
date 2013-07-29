@@ -18,6 +18,8 @@ import com.ncgeek.games.shattered.characters.ShatteredCharacter;
 
 public class GameMenu extends ShatteredScreen {
 
+	final static float WIDTH_STATS = 200f;
+	
 	private Stage stage;
 	private GameOptions options;
 	
@@ -75,7 +77,7 @@ public class GameMenu extends ShatteredScreen {
 		parent.setFillParent(true);
 		
 		parent.add(createPartyList(skin)).colspan(3).expand().fill();
-		parent.add("stats").width(200).fill();
+		parent.add("stats").width(WIDTH_STATS).fill();
 		parent.row();
 		
 		btnDebug = new TextButton("Debug Drawing: ", skin);
@@ -106,22 +108,22 @@ public class GameMenu extends ShatteredScreen {
 	}
 	
 	private Actor createPartyList(Skin skin) {
-		PartyLayout layout = new PartyLayout();
+		PartyLayout layoutParty = new PartyLayout();
 		
 		CharacterListItem cli = null;
-		for(int i=0; i<1; ++i) {
+		for(int i=0; i<5; ++i) {
 			for(ShatteredCharacter sc : party.getParty()) {
 				cli = new CharacterListItem(sc, skin);
-				layout.add(cli);
+				layoutParty.addActor(cli);
 			}
 		}
 		
 		for(ShatteredCharacter sc : party.getReserves()) {
 			cli = new CharacterListItem(sc, skin);
-			layout.add(cli);
+			layoutParty.addActor(cli);
 		}
 		
-		ScrollPane pane = new ScrollPane(layout, skin);
+		ScrollPane pane = new ScrollPane(layoutParty, skin);
 		pane.setFadeScrollBars(false);
 		return pane;
 	}
