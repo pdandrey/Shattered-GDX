@@ -7,6 +7,10 @@ public class ShatteredCharacter {
 	private String soul;
 	private Animation animation;
 	
+	private Stats baseStats;
+	private Stats currentStats;
+	private HitPoints hp;
+	
 	public ShatteredCharacter() {
 		name = "No Name";
 		soul = "No Soul";
