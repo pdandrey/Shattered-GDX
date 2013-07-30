@@ -65,7 +65,11 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		float h = Gdx.graphics.getHeight();
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 10, 10);
+		float vpWidth = (w / h) * 10;
+		float vpHeight = 10;
+		camera.setToOrtho(false, vpWidth, vpHeight);
+		Log.log(LOG_TAG, "Screen Size: %f x %f", w, h);
+		Log.log(LOG_TAG, "ViewPort size: %f x %f", vpWidth, vpHeight);
 		camera.update();
 		
 		controller = new ShatteredController(camera);
@@ -218,7 +222,11 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 
 	@Override
 	public void resize(int width, int height) {
-		stage.setViewport(width/2, height/2, true);
+		stage.setViewport((float)width/2f, (float)height/2f, true);
+		camera.setToOrtho(false, ((float)width/(float)height)*10, 10);
+		Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
+		camera.position.set(curr);
+		camera.update();
 	}
 
 	@Override
