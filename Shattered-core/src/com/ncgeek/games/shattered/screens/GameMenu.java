@@ -1,11 +1,14 @@
 package com.ncgeek.games.shattered.screens;
 
+import java.util.EnumMap;
+
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -15,6 +18,9 @@ import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
 import com.ncgeek.games.shattered.characters.Party;
 import com.ncgeek.games.shattered.characters.ShatteredCharacter;
+import com.ncgeek.games.shattered.characters.Stats;
+import com.ncgeek.games.shattered.characters.Stats.Names;
+import com.ncgeek.games.shattered.screens.PartyLayout.CharacterSelectedEvent;
 
 public class GameMenu extends ShatteredScreen {
 
@@ -25,6 +31,11 @@ public class GameMenu extends ShatteredScreen {
 	
 	private TextButton btnDebug;
 	private Party party;
+	
+	private Label lblName;
+	private Label lblSoul;
+	private Label lblHP;
+	private EnumMap<Stats.Names, Label> mapStats;
 	
 	public GameMenu(IGameStateManager manager, Party party) {
 		super(manager);
@@ -76,8 +87,10 @@ public class GameMenu extends ShatteredScreen {
 		
 		parent.setFillParent(true);
 		
+		Actor stats = createStats(skin);
+		
 		parent.add(createPartyList(skin)).colspan(3).expand().fill();
-		parent.add("stats").width(WIDTH_STATS).fill();
+		parent.add(stats).width(WIDTH_STATS).fill();
 		parent.row();
 		
 		btnDebug = new TextButton("Debug Drawing: ", skin);
@@ -107,6 +120,36 @@ public class GameMenu extends ShatteredScreen {
 		});
 	}
 	
+	private Actor createStats(Skin skin) {
+		Table tbl = new Table();
+		
+		lblName = new Label("", skin);
+		lblSoul = new Label("", skin);
+		lblHP = new Label("", skin);
+		
+		tbl.add(lblName).colspan(2);
+		tbl.row();
+		tbl.add(lblSoul).colspan(2);
+		tbl.row();
+		tbl.add(lblHP).colspan(2);
+		
+		mapStats = new EnumMap<Stats.Names, Label>(Stats.Names.class);
+		
+		for(Stats.Names stat : Stats.Names.values()) {
+			if(stat == Names.MaxHP)
+				continue;
+			
+			Label lbl = new Label("", skin);
+			mapStats.put(stat, lbl);
+			tbl.row();
+			tbl.add(new Label(stat.toString(), skin));
+			tbl.add(lbl).expandX().right();
+		}
+		
+		tbl.top().left();
+		return tbl;
+	}
+
 	private Actor createPartyList(Skin skin) {
 		PartyLayout layoutParty = new PartyLayout();
 		
@@ -121,9 +164,35 @@ public class GameMenu extends ShatteredScreen {
 			layoutParty.addActor(cli);
 		}
 		
+		layoutParty.addListener(new PartyLayout.CharacterSelectedListener() {
+			@Override
+			public boolean characterSelected(CharacterSelectedEvent event) {
+				ShatteredCharacter c = event.getSelected().getCharacter();
+				setCharacterStats(c);
+				return true;
+			}
+		});
+		
+		setCharacterStats(layoutParty.getSelectedCharacterListItem().getCharacter());
+		
 		ScrollPane pane = new ScrollPane(layoutParty, skin);
 		pane.setFadeScrollBars(false);
 		return pane;
+	}
+	
+	private void setCharacterStats(ShatteredCharacter c) {
+		lblName.setText(c.getName());
+		lblSoul.setText(c.getSoul());
+		lblHP.setText(String.format("HP: %d / %d", c.getHitPoints().getCurrent(), c.getHitPoints().getMax()));
+		
+		Stats stats = c.getBaseStats();
+		
+		for(Stats.Names name : Stats.Names.values()) {
+			Label l = mapStats.get(name);
+			if(l != null) {
+				l.setText(stats.get(name) + "");
+			}
+		}
 	}
 	
 	private void updateUI() {

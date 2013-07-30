@@ -20,8 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
+import com.ncgeek.games.shattered.characters.HitPoints;
 import com.ncgeek.games.shattered.characters.Party;
 import com.ncgeek.games.shattered.characters.ShatteredCharacter;
+import com.ncgeek.games.shattered.characters.Stats;
 import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.entities.Mob;
 import com.ncgeek.games.shattered.utils.ActionListener;
@@ -167,7 +169,6 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				getManager().pushScreen(screenMenu);
-				//map.setShowDebug(!map.isShowDebug());
 			}
 		});
 		
@@ -198,25 +199,42 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	}
 	
 	private void loadParty() {
+		Stats s = new Stats();
+		
 		party = new Party();
 		ShatteredCharacter sc = new ShatteredCharacter();
+		HitPoints hp = new HitPoints();
+		hp.setMax(24);
+		hp.setCurrent(24);
 		sc.setName("Player");
 		sc.setSoul("Tester");
 		sc.setAnimation(player.getAnimation("walksouth"));
+		sc.setHP(hp);
+		sc.setBaseStats(s);
 		party.add(sc);
 		
 		Mob m = (Mob)map.getEntityByName("princess").get(0);
 		sc = new ShatteredCharacter();
+		hp = new HitPoints();
+		hp.setMax(17);
+		hp.setCurrent(10);
 		sc.setName("Princess");
 		sc.setSoul("Royalty");
 		sc.setAnimation(m.getAnimation("walksouth"));
+		sc.setHP(hp);
+		sc.setBaseStats(s);
 		party.add(sc);
 		
 		m = (Mob)map.getEntityByName("anna").get(0);
 		sc = new ShatteredCharacter();
+		hp = new HitPoints();
+		hp.setMax(30);
+		hp.setCurrent(5);
 		sc.setName("Anna");
 		sc.setSoul("Fashionista");
 		sc.setAnimation(m.getAnimation("walksouth"));
+		sc.setHP(hp);
+		sc.setBaseStats(s);
 		party.add(sc);
 	}
 
