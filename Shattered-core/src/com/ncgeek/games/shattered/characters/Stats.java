@@ -2,6 +2,8 @@ package com.ncgeek.games.shattered.characters;
 
 public class Stats {
 	
+	public enum Names { MaxHP, Strength, Dexterity, Vitality, Agility, Intelligence, Mind, Spirit }
+	
 	private int maxHP;
 	
 	private int str;
@@ -14,6 +16,46 @@ public class Stats {
 	
 	public Stats() {
 		maxHP = str = dex = vit = agi = intel = mind = spirit = 0;
+	}
+	
+	public Stats(Stats copyFrom) {
+		maxHP = copyFrom.maxHP;
+		str = copyFrom.str;
+		dex = copyFrom.dex;
+		vit = copyFrom.vit;
+		agi = copyFrom.agi;
+		intel = copyFrom.intel;
+		mind = copyFrom.mind;
+		spirit = copyFrom.spirit;
+	}
+	
+	public void set(Names name, int value) {
+		switch(name) {
+			case MaxHP: setMaxHP(value); break;
+			case Strength: setStrength(value); break;
+			case Dexterity: setDexterity(value); break;
+			case Vitality: setVitality(value); break;
+			case Agility: setAgility(value); break;
+			case Intelligence: setIntellegence(value); break;
+			case Mind: setMind(value); break;
+			case Spirit: setSpirit(value); break;
+		}
+	}
+	
+	public int get(Names name) {
+		switch(name) {
+			case MaxHP: return getMaxHP();
+			case Strength: return getStrength();
+			case Dexterity: return getDexterity();
+			case Vitality: return getVitality();
+			case Agility: return getAgility();
+			case Intelligence: return getIntellegence();
+			case Mind: return getMind();
+			case Spirit: return getSpirit();
+			
+			default:
+				throw new IllegalArgumentException("Unknown stat name: " + name.toString());
+		}
 	}
 
 	public int getMaxHP() {

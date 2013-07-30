@@ -15,6 +15,8 @@ public class ShatteredCharacter {
 		name = "No Name";
 		soul = "No Soul";
 		animation = null;
+		baseStats = null;
+		currentStats = null;
 	}
 
 	public String getName() { return name; }
@@ -26,5 +28,12 @@ public class ShatteredCharacter {
 	public Animation getAnimation() { return animation; }
 	public void setAnimation(Animation animation) { this.animation = animation; }
 	
+	public void setBaseStats(Stats stats) { baseStats = stats; }
+	public Stats getBaseStats() { return baseStats; }
+
+	public void setCurrentStats(Stats stats) { currentStats = stats; }
+	public Stats getCurrentStats() { return currentStats; }
 	
+	public void setHP(HitPoints hp) { this.hp = hp; }
+	public HitPoints getHitPoints() { return hp; }
 }
