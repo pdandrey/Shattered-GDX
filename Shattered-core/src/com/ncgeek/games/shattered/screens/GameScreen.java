@@ -203,21 +203,23 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		
 		Mob m = (Mob)map.getEntityByName("princess").get(0);
 		sc = new ShatteredCharacter();
-		sc.setName(m.getName());
+		sc.setName("Princess");
 		sc.setSoul("Royalty");
 		sc.setAnimation(m.getAnimation("walksouth"));
 		party.add(sc);
 		
 		m = (Mob)map.getEntityByName("anna").get(0);
 		sc = new ShatteredCharacter();
-		sc.setName(m.getName());
+		sc.setName("Anna");
 		sc.setSoul("Fashionista");
 		sc.setAnimation(m.getAnimation("walksouth"));
 		party.add(sc);
 	}
 
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+		stage.setViewport(width/2, height/2, true);
+	}
 
 	@Override
 	public void show() {
