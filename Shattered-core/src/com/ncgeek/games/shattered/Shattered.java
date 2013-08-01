@@ -26,8 +26,7 @@ public class Shattered extends Game implements IGameStateManager {
 	private LinkedList<ShatteredScreen> stackScreens;
 	
 	@Override
-	public void create() {		
-		
+	public void create() {
 		stackScreens = new LinkedList<ShatteredScreen>();
 		
 		Gdx.input.setCatchBackKey(true);

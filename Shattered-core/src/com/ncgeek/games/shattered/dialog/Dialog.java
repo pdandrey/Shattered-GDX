@@ -1,8 +1,6 @@
 package com.ncgeek.games.shattered.dialog;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,28 +15,6 @@ public class Dialog {
 		INSTANCE.scroll = scroll;
 		INSTANCE.label = (Label)scroll.findActor("lblDialog");
 		scroll.setVisible(false);
-		
-		scroll.addListener(new InputListener() {
-
-			@Override
-			public boolean keyUp(InputEvent event, int keycode) {
-				if(keycode == Keys.ENTER) {
-					INSTANCE.progress();
-				}
-				return true;
-			}
-
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				return true;
-			}
-
-			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				return true;
-			}
-			
-		});
 		
 		scroll.addListener(new ClickListener() {
 
@@ -63,6 +39,8 @@ public class Dialog {
 	
 	private Dialog() {}
 	
+	public boolean isDialogActive() { return scroll.isVisible(); }
+	
 	public void setText(String text) {
 		setText(text, null, -1);
 	}
@@ -74,14 +52,12 @@ public class Dialog {
 		label.setText(text);
 		label.getTextBounds();
 		scroll.setVisible(true);
-		label.getStage().setKeyboardFocus(label);
 	}
 	
 	public void progress() {
 		if(!scroll.isScrollY() || scroll.getScrollPercentY() == 1) {
 			label.setText("");
 			scroll.setVisible(false);
-			label.getStage().setKeyboardFocus(null);
 			
 			if(callback != null) {
 				callback.dialogFinished(converstationID);

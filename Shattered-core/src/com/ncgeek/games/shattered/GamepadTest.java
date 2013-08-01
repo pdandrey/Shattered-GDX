@@ -34,7 +34,7 @@ public class GamepadTest extends GdxTest {
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
 		for(Controller controller: Controllers.getControllers()) {
-			print("#" + i++ + ": " + controller.getName());
+			print("#" + i++ + ": " + controller.getName() + " (" + controller.getClass().getName() + ")");
 		}
 		if(Controllers.getControllers().size == 0) print("No controllers attached");
 		

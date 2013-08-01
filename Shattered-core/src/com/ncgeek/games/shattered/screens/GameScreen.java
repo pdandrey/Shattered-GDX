@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -17,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
 import com.ncgeek.games.shattered.characters.HitPoints;
@@ -26,7 +24,7 @@ import com.ncgeek.games.shattered.characters.ShatteredCharacter;
 import com.ncgeek.games.shattered.characters.Stats;
 import com.ncgeek.games.shattered.dialog.Dialog;
 import com.ncgeek.games.shattered.entities.Mob;
-import com.ncgeek.games.shattered.utils.ActionListener;
+import com.ncgeek.games.shattered.utils.GameControllerListener;
 import com.ncgeek.games.shattered.utils.Log;
 import com.ncgeek.games.shattered.utils.ShatteredController;
 import com.ncgeek.games.shattered.utils.ShatteredMap;
@@ -54,6 +52,8 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 	
 	private boolean bPaused;
 	
+	private Vector2 playerMovement;
+	
 	private GameMenu screenMenu;
 	
 	private Party party;
@@ -74,15 +74,41 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		Log.log(LOG_TAG, "ViewPort size: %f x %f", vpWidth, vpHeight);
 		camera.update();
 		
-		controller = new ShatteredController(camera);
-		controller.setActionListener(new ActionListener() {
+		playerMovement = new Vector2(0, 0);
+		
+		controller = new ShatteredController();
+		controller.setActionListener(new GameControllerListener() {
 			@Override
-			public void defaultActionPerformed() {
-				if(player.hasTarget()) {
+			public void action() {
+				if(Dialog.getInstance().isDialogActive()) {
+					Dialog.getInstance().progress();
+				} else if(player.hasTarget()) {
 					player.getTarget().interact(player);
 				}
 			}
+
+			@Override
+			public void cancel() {
+				
+			}
+
+			@Override
+			public void move(float x, float y) {
+				playerMovement.set(x, y);
+			}
+
+			@Override
+			public void menu() {
+				getManager().pushScreen(screenMenu);
+			}
+
+			@Override
+			public void pause() {
+				
+			}
 		});
+		
+		super.setGamepadController(controller.getGamepadListener());
 		
 		stage = new Stage(w/2, h/2, false);
 		
@@ -113,23 +139,12 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		float x = 0, y = 0;
-		
-		if(pad != null && pad.isTouched()) {
-			x = pad.getKnobPercentX();
-			y = pad.getKnobPercentY();
-		} else if(controller.hasMovement()) {
-			Vector2 movement = controller.getMovement();
-			x = movement.x;
-			y = movement.y;
-		}
+		float x = playerMovement.x, y = playerMovement.y;
 		
 		if(!bPaused) {
 			if(x != 0 || y != 0) {
 				player.move(TOUCHPAD_MAX_SCROLL_SPEED * x, TOUCHPAD_MAX_SCROLL_SPEED * y);
-				
-				Vector3 curr = new Vector3(player.getPosition().x, player.getPosition().y, 0);
-				camera.position.set(curr);
+				camera.position.set(player.getPosition().x, player.getPosition().y, 0);
 			} else {
 				player.move(0,0);
 			}
@@ -165,18 +180,13 @@ private final static float TOUCHPAD_MAX_SCROLL_SPEED = 3f; //2.1f;
 		TextButton btnMenu = new TextButton("Menu", skin);
 		parent.add(btnMenu).top().right();
 		
-		btnMenu.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				getManager().pushScreen(screenMenu);
-			}
-		});
+		btnMenu.addListener(controller.getMenuButtonClickedListener());
 		
 		parent.row();
 		
 		if(isTouchscreen) {
 			pad = new Touchpad(10f, skin);
-			
+			pad.addListener(controller.getTouchpadChangedListener());
 			//parent.add(pad).expand().bottom().left();
 			parent.add(pad).expand().bottom().left();
 		} else {
