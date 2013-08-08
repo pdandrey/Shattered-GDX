@@ -3,8 +3,10 @@ package com.ncgeek.games.shattered.dialog;
 public class Conversation implements DialogListener {
 
 	private String[] lines;
+	private boolean inConversation;
 	
 	public Conversation() {
+		inConversation = false;
 	}
 	
 	public Conversation(String[] lines) {
@@ -25,6 +27,11 @@ public class Conversation implements DialogListener {
 	}
 
 	public void begin() {
+		isInConversation = true;
 		Dialog.getInstance().setText(lines[0], this, 0);
+	}
+	
+	public boolean isInConversation() {
+		
 	}
 }

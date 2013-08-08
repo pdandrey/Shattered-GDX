@@ -3,42 +3,35 @@ package com.ncgeek.games.shattered.dialog;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class Dialog {
+public class Dialog extends ScrollPane {
 
 	@SuppressWarnings("unused")
 	private static final String LOG_TAG = "Dialog";
-	private static final Dialog INSTANCE = new Dialog();
 	
-	public static void init(ScrollPane scroll) {
-		INSTANCE.scroll = scroll;
-		INSTANCE.label = (Label)scroll.findActor("lblDialog");
-		scroll.setVisible(false);
-		
-		scroll.addListener(new ClickListener() {
-
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				event.handle();
-				INSTANCE.progress();
-			}
-			
-		});
-	}
-	
-	public static Dialog getInstance() {
-		return INSTANCE;
-	}
-	
-	private Label label;
-	private ScrollPane scroll;
+	private Label dialog;
 	
 	private DialogListener callback;
 	private int converstationID;
 	
-	private Dialog() {}
+	private Dialog(Skin skin, String scrollStyle) {
+		super(null, skin, scrollStyle);
+		dialog = new Label("", skin);
+		this.setWidget(dialog);
+	}
 	
+	@Override
+	public float getPrefWidth() {
+		return getStage().getWidth() - 10;
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return 100;
+	}
+
 	public boolean isDialogActive() { return scroll.isVisible(); }
 	
 	public void setText(String text) {
