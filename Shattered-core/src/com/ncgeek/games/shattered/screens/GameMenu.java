@@ -4,15 +4,16 @@ import java.util.EnumMap;
 
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ncgeek.games.shattered.GameOptions;
 import com.ncgeek.games.shattered.IGameStateManager;
@@ -21,6 +22,9 @@ import com.ncgeek.games.shattered.characters.ShatteredCharacter;
 import com.ncgeek.games.shattered.characters.Stats;
 import com.ncgeek.games.shattered.characters.Stats.Names;
 import com.ncgeek.games.shattered.screens.PartyLayout.CharacterSelectedEvent;
+import com.ncgeek.games.shattered.screens.ui.FocusGroup;
+import com.ncgeek.games.shattered.screens.ui.FocusTextButton;
+import com.ncgeek.games.shattered.utils.Log;
 
 public class GameMenu extends ShatteredScreen {
 
@@ -28,14 +32,25 @@ public class GameMenu extends ShatteredScreen {
 	
 	private Stage stage;
 	private GameOptions options;
-	
-	private TextButton btnDebug;
+	 
+	private FocusTextButton btnDebug;
 	private Party party;
-	
+	 
 	private Label lblName;
 	private Label lblSoul;
 	private Label lblHP;
 	private EnumMap<Stats.Names, Label> mapStats;
+	
+	private int focusedIndex = 0;
+	private FocusTextButton [] buttons;
+	
+	private int[] keysMoveUp = { Keys.UP, Keys.W };
+	private int[] keysMoveDown = { Keys.DOWN, Keys.S };
+	private int[] keysMoveLeft = { Keys.LEFT, Keys.A };
+	private int[] keysMoveRight = { Keys.RIGHT, Keys.D };
+	private int[] keysMenu = { Keys.ESCAPE, Keys.UNKNOWN };
+	private int[] keysAction = { Keys.ENTER, Keys.SPACE };
+	private int[] keysCancel = { Keys.BACKSPACE, Keys.UNKNOWN };
 	
 	public GameMenu(IGameStateManager manager, Party party) {
 		super(manager);
@@ -51,7 +66,7 @@ public class GameMenu extends ShatteredScreen {
 		
 		createUI();
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0,0,0, 1f);
@@ -93,14 +108,22 @@ public class GameMenu extends ShatteredScreen {
 		parent.add(stats).width(WIDTH_STATS).fill();
 		parent.row();
 		
-		btnDebug = new TextButton("Debug Drawing: ", skin);
+		btnDebug = new FocusTextButton("Debug Drawing: ", skin);
 		
-		TextButton btnClose = new TextButton("Close", skin);
+		FocusTextButton btnClose = new FocusTextButton("Close", skin);
+		btnClose.setChecked(true);
+		buttons = new FocusTextButton [] {
+				btnDebug,
+				new FocusTextButton("Button", skin),
+				new FocusTextButton("Button", skin),
+				btnClose
+		};
 		
-		parent.add(btnDebug);
-		parent.add(new TextButton("Button", skin));
-		parent.add(new TextButton("Button", skin));
-		parent.add(btnClose);
+		
+		FocusGroup fg = new FocusGroup(buttons);
+		for(FocusTextButton ftb : buttons) {
+			parent.add(ftb);
+		}
 		
 		stage.addActor(parent);
 		
@@ -115,9 +138,40 @@ public class GameMenu extends ShatteredScreen {
 		btnClose.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				getManager().popScreen(null);
+				close();
 			}
 		});
+		
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				if(keycode == keysMoveUp[0] || keycode == keysMoveUp[1] || keycode == keysMoveLeft[0] || keycode == keysMoveLeft[1]) {
+					--focusedIndex;
+					if(focusedIndex < 0)
+						focusedIndex = buttons.length - 1;
+				} else if(keycode == keysMoveDown[0] || keycode == keysMoveDown[1] || keycode == keysMoveRight[0] || keycode == keysMoveRight[1]) {
+					focusedIndex = (focusedIndex + 1) % buttons.length;
+				} else if(keycode == keysAction[0] || keycode == keysAction[1]) {
+					buttons[focusedIndex].click();
+					return true;
+				} else if(keycode == keysCancel[0] || keycode == keysCancel[1] || keycode == keysMenu[0] || keycode == keysMenu[1]) {
+					close();
+					return true;
+				} else {
+					return super.keyUp(event, keycode);
+				}
+				
+				buttons[focusedIndex].setFocused(true);
+				
+				return true;					
+			}
+		});
+		
+		buttons[focusedIndex].setFocused(true);
+	}
+	
+	private void close() {
+		getManager().popScreen(null);
 	}
 	
 	private Actor createStats(Skin skin) {

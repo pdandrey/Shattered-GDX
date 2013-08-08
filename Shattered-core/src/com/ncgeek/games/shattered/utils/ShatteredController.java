@@ -130,7 +130,7 @@ public class ShatteredController extends InputAdapter {
 			fireCompoundMove(-1, 0);
 		else if(keycode == keysMenu[0] || keycode == keysMenu[1])
 			fireMenu();
-		else if(keycode == keysAction[0] || keycode == keysMenu[1])
+		else if(keycode == keysAction[0] || keycode == keysAction[1])
 			fireAction();
 		else if(keycode == keysCancel[0] || keycode == keysCancel[1])
 			fireCancel();
